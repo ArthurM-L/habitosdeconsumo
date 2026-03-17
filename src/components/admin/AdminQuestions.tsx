@@ -22,9 +22,10 @@ export default function AdminQuestions() {
       .order('order_index')
       .then(({ data }) => {
         if (data) {
-          setQs(data);
+          const typed = data as unknown as Question[];
+          setQs(typed);
           const texts: Record<number, string> = {};
-          data.forEach((q: Question) => { texts[q.id] = q.text; });
+          typed.forEach((q) => { texts[q.id] = q.text; });
           setEditText(texts);
         }
       });

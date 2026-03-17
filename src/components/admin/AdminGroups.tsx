@@ -40,7 +40,7 @@ export default function AdminGroups() {
   const handleAdd = async () => {
     if (!newGroup.id || !newGroup.name) return;
     setAdding(true);
-    await supabase.from('groups').insert(newGroup);
+    await supabase.from('groups').insert(newGroup as { id: string; name: string; color: string; icon: string; description: string });
     setNewGroup({ id: '', name: '', color: '#6366F1', icon: '🌟', description: '' });
     setAdding(false);
     fetchGroups();

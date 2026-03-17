@@ -28,7 +28,8 @@ export default function AdminWeights() {
       supabase.from('groups').select('id, name, color'),
     ]).then(([qRes, gRes]) => {
       if (qRes.data) {
-        setQs(qRes.data);
+        const typedQs = qRes.data as unknown as Question[];
+        setQs(typedQs);
         const w: Record<string, Record<string, string>> = {};
         qRes.data.forEach((q: Question) => {
           w[q.id] = {};

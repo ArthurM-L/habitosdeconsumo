@@ -19,7 +19,7 @@ export default function AdminResponses() {
       .order('created_at', { ascending: false })
       .limit(50)
       .then(({ data }) => {
-        if (data) setSessions(data);
+        if (data) setSessions(data as unknown as Session[]);
         setLoading(false);
       });
   }, []);
