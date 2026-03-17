@@ -31,7 +31,7 @@ export default function AdminWeights() {
         const typedQs = qRes.data as unknown as Question[];
         setQs(typedQs);
         const w: Record<string, Record<string, string>> = {};
-        qRes.data.forEach((q: Question) => {
+        typedQs.forEach((q) => {
           w[q.id] = {};
           (gRes.data ?? seedGroups).forEach((g: { id: string }) => {
             w[q.id][g.id] = String(q.weights?.[g.id] ?? 0.5);
@@ -39,7 +39,7 @@ export default function AdminWeights() {
         });
         setWeights(w);
       }
-      if (gRes.data) setDbGroups(gRes.data);
+      if (gRes.data) setDbGroups(gRes.data as unknown as Group[]);
     });
   }, []);
 
