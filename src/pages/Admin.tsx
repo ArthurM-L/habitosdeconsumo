@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, LogOut } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import AdminQuestions from '@/components/admin/AdminQuestions';
 import AdminWeights from '@/components/admin/AdminWeights';
 import AdminGroups from '@/components/admin/AdminGroups';

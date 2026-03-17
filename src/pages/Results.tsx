@@ -5,7 +5,7 @@ import { RotateCcw, Share2, Check } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useQuizStore } from '@/store/quizStore';
 import { groups } from '@/data/quizData';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 function useCountUp(target: number, duration = 1500) {
   const [value, setValue] = useState(0);
