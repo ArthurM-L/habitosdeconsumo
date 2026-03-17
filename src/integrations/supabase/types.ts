@@ -14,7 +14,98 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      groups: {
+        Row: {
+          color: string
+          description: string
+          icon: string
+          id: string
+          name: string
+        }
+        Insert: {
+          color?: string
+          description?: string
+          icon?: string
+          id: string
+          name: string
+        }
+        Update: {
+          color?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          id: number
+          order_index: number
+          text: string
+          weights: Json
+        }
+        Insert: {
+          id?: number
+          order_index?: number
+          text: string
+          weights?: Json
+        }
+        Update: {
+          id?: number
+          order_index?: number
+          text?: string
+          weights?: Json
+        }
+        Relationships: []
+      }
+      quiz_answers: {
+        Row: {
+          answer_value: number
+          id: string
+          question_id: number
+          session_id: string | null
+        }
+        Insert: {
+          answer_value: number
+          id?: string
+          question_id: number
+          session_id?: string | null
+        }
+        Update: {
+          answer_value?: number
+          id?: string
+          question_id?: number
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          results: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          results?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          results?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
