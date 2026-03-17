@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flame, Star } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
-import { questions, likertOptions } from '@/data/quizData';
+import { questions, likertOptions, calculateResults } from '@/data/quizData';
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -45,16 +45,14 @@ export default function Quiz() {
   const [showXpPop, setShowXpPop] = useState(false);
   const [showMilestone, setShowMilestone] = useState(false);
   const [milestoneMsg, setMilestoneMsg] = useState('');
-  const [direction, setDirection] = useState(1);
+  const [direction] = useState(1);
 
-  // Guard: redirect if not in quiz phase
   useEffect(() => {
     if (phase === 'landing') navigate('/');
     if (phase === 'loading') navigate('/loading');
     if (phase === 'results') navigate('/results');
   }, [phase, navigate]);
 
-  // Restore selected value if revisiting
   useEffect(() => {
     const existing = answers.find((a) => a.questionId === questions[currentQuestion]?.id);
     setSelectedValue(existing ? existing.value : null);
@@ -72,7 +70,6 @@ export default function Quiz() {
       setXpPopKey((k) => k + 1);
       setShowXpPop(true);
 
-      // Milestone check
       const nextIdx = currentQuestion + 1;
       if (motivationalMessages[nextIdx]) {
         setMilestoneMsg(motivationalMessages[nextIdx]);
@@ -85,18 +82,16 @@ export default function Quiz() {
         setShowCheck(false);
 
         if (nextIdx >= questions.length) {
-          // Calculate results
+          const currentAnswers = useQuizStore.getState().answers;
           const allAnswers = [
-            ...useQuizStore.getState().answers.filter((a) => a.questionId !== questions[currentQuestion].id),
+            ...currentAnswers.filter((a) => a.questionId !== questions[currentQuestion].id),
             { questionId: questions[currentQuestion].id, value },
           ];
-          const { calculateResults } = require('@/data/quizData');
-          const results = calculateResults(allAnswers);
-          setResults(results);
+          const computed = calculateResults(allAnswers);
+          setResults(computed);
           setPhase('loading');
           navigate('/loading');
         } else {
-          setDirection(1);
           setCurrentQuestion(nextIdx);
         }
       }, 650);
@@ -105,7 +100,7 @@ export default function Quiz() {
   );
 
   const question = questions[currentQuestion];
-  const progress = ((currentQuestion) / questions.length) * 100;
+  const progress = (currentQuestion / questions.length) * 100;
   const progressAfter = ((currentQuestion + 1) / questions.length) * 100;
 
   if (!question) return null;
@@ -114,7 +109,6 @@ export default function Quiz() {
     <div className="min-h-screen mesh-bg flex flex-col px-4 pt-6 pb-8">
       {/* Top HUD */}
       <div className="max-w-2xl mx-auto w-full">
-        {/* Progress row */}
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-muted-foreground font-display">
             Pergunta{' '}
@@ -122,7 +116,6 @@ export default function Quiz() {
             {' '}de {questions.length}
           </span>
 
-          {/* XP counter */}
           <div className="relative flex items-center gap-1.5 glass rounded-full px-3 py-1">
             <Star className="w-3.5 h-3.5 text-warning fill-warning" />
             <span className="text-sm font-bold font-display text-foreground">{xp} XP</span>
@@ -154,7 +147,6 @@ export default function Quiz() {
           />
         </div>
 
-        {/* Streak */}
         <AnimatePresence>
           {streak >= 3 && (
             <motion.div
@@ -183,7 +175,6 @@ export default function Quiz() {
             transition={{ duration: 0.35, ease: 'easeInOut' }}
             className="w-full"
           >
-            {/* Question badge + text */}
             <div className="glass rounded-2xl p-6 sm:p-8 mb-6">
               <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-4">
                 <span className="text-xs font-bold text-primary font-display">
