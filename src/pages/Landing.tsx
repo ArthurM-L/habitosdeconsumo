@@ -16,8 +16,8 @@ export default function Landing() {
 
   const handleStart = () => {
     resetQuiz();
-    setPhase('quiz');
-    navigate('/quiz');
+    setPhase('intro');
+    navigate('/intro');
   };
 
   return (
