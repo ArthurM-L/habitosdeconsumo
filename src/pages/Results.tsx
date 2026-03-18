@@ -282,6 +282,38 @@ export default function Results() {
           <p className="text-muted-foreground text-[13px] leading-relaxed">{primaryGroup.interpretation}</p>
         </motion.div>
 
+        {/* ── Personalized Alert ── */}
+        {generationAlerts[primaryGroup.id] && (() => {
+          const alert = generationAlerts[primaryGroup.id];
+          return (
+            <motion.div
+              className="rounded-3xl p-4 relative overflow-hidden"
+              style={{
+                background: 'hsl(var(--warning) / 0.08)',
+                border: '1.5px solid hsl(var(--warning) / 0.3)',
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.52 }}
+            >
+              {/* subtle glow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--warning) / 0.07), transparent 70%)' }} />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <span className="text-xl leading-none">{alert.icon}</span>
+                  <h3 className="font-display font-bold text-sm" style={{ color: 'hsl(var(--warning))' }}>
+                    {alert.title}
+                  </h3>
+                </div>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'hsl(var(--foreground) / 0.75)' }}>
+                  {alert.tip}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })()}
+
       </div>
 
       {/* ── Pinned CTA ── */}
