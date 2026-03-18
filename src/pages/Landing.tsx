@@ -4,9 +4,10 @@ import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 
 const profiles = [
-  { icon: '📱', name: 'Digital', color: 'hsl(77 100% 50%)' },
-  { icon: '🛡️', name: 'Cauteloso', color: 'hsl(38 92% 50%)' },
-  { icon: '⚡', name: 'Impulsivo', color: 'hsl(142 60% 42%)' },
+  { icon: '🧭', name: 'Geração X', color: 'hsl(38 92% 50%)' },
+  { icon: '🚀', name: 'Millennial', color: 'hsl(77 100% 50%)' },
+  { icon: '⚡', name: 'Geração Z', color: 'hsl(162 60% 48%)' },
+  { icon: '🌐', name: 'Alpha', color: 'hsl(265 80% 73%)' },
 ];
 
 export default function Landing() {
