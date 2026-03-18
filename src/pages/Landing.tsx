@@ -74,7 +74,7 @@ export default function Landing() {
         >
           {profiles.map((p, i) => (
             <motion.div
-              key={p.id}
+              key={p.name}
               className="flex-1 glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

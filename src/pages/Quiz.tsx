@@ -125,7 +125,7 @@ export default function Quiz() {
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: i < currentQuestion + (showCheck ? 1 : 0) ? 1 : 0 }}
                     transition={{ duration: 0.4, ease: 'easeOut', delay: i < currentQuestion ? 0 : 0.1 }}
-                    style={{ transformOrigin: 'left', background: 'var(--gradient-progress)' }}
+                    style={{ transformOrigin: 'left' as const, background: 'var(--gradient-progress)' }}
                   />
                 </motion.div>
               ))}
