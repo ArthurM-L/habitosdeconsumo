@@ -14,7 +14,7 @@ export default function AdminGroups() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [saving, setSaving] = useState<Record<string, boolean>>({});
   const [saved, setSaved] = useState<Record<string, boolean>>({});
-  const [newGroup, setNewGroup] = useState<Partial<Group>>({ id: '', name: '', color: '#6366F1', icon: '🌟', description: '' });
+  const [newGroup, setNewGroup] = useState<Partial<Group>>({ id: '', name: '', color: '#B4FF00', icon: '🌟', description: '' });
   const [adding, setAdding] = useState(false);
 
   const fetchGroups = async () => {
