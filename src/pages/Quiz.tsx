@@ -44,6 +44,7 @@ export default function Quiz() {
 
   useEffect(() => {
     if (phase === 'landing') navigate('/');
+    if (phase === 'intro') navigate('/intro');
     if (phase === 'loading') navigate('/loading');
     if (phase === 'results') navigate('/results');
   }, [phase, navigate]);
