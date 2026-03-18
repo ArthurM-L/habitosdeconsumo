@@ -212,9 +212,9 @@ export default function Quiz() {
               </div>
             </div>
 
-            {/* Likert options: 2 top + 3 bottom */}
+            {/* Likert options: 2 top + 3 bottom — fills remaining space */}
             <div className="flex flex-col gap-2.5 flex-1">
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -223,10 +223,11 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
+                    stretch
                   />
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -235,6 +236,7 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
+                    stretch
                   />
                 ))}
               </div>
