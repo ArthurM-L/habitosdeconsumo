@@ -124,6 +124,25 @@ export default function Results() {
               {primaryGroup.name}
             </h2>
 
+            {/* Generation year range */}
+            {(() => {
+              const ranges: Record<string, string> = {
+                geracaoX: '1965 – 1980',
+                geracaoY: '1981 – 1996',
+                geracaoZ: '1997 – 2012',
+                geracaoAlpha: '2012 – 2025',
+              };
+              const range = ranges[primaryGroup.id];
+              return range ? (
+                <span
+                  className="inline-block text-xs font-semibold font-display px-3 py-1 rounded-full mb-1"
+                  style={{ background: primaryGroup.color + '22', color: primaryGroup.color }}
+                >
+                  {range}
+                </span>
+              ) : null;
+            })()}
+
             {/* Animated count-up */}
             <PrimaryPercentage value={primary.percentage} color={primaryGroup.color} />
 
