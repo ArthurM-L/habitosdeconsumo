@@ -30,6 +30,29 @@ const generationRanges: Record<string, string> = {
   geracaoAlpha: '2012–2025',
 };
 
+const generationAlerts: Record<string, { icon: string; title: string; tip: string }> = {
+  geracaoX: {
+    icon: '🔐',
+    title: 'Atenção: golpes por e-mail e WhatsApp',
+    tip: 'Seu perfil demonstra alta cautela digital — ótimo! Reforce esse instinto: desconfie de links recebidos por e-mail ou mensagem, mesmo que pareçam vir de bancos ou marketplaces. Antes de clicar, acesse o site diretamente pelo navegador. Golpistas sabem que a Geração X valoriza segurança e exploram isso com páginas falsas muito convincentes.',
+  },
+  geracaoY: {
+    icon: '💳',
+    title: 'Atenção: o risco do superendividamento',
+    tip: 'Millennials são a geração mais propensa ao superendividamento no Brasil. O acesso fácil ao crédito, combinado com estímulos constantes nas redes sociais, cria armadilhas invisíveis. Antes de parcelar, pergunte-se: "preciso disso agora ou estou comprando para me sentir melhor?" Regra prática: nunca comprometa mais de 30% da sua renda com parcelas.',
+  },
+  geracaoZ: {
+    icon: '🛍️',
+    title: 'Atenção: o Efeito Batom no seu bolso',
+    tip: 'O "Efeito Batom" é real para o seu perfil: pequenas compras frequentes — R$20 aqui, R$35 ali — parecem inofensivas, mas somadas superam facilmente grandes gastos planejados. Rastreie seus micro-consumos por 30 dias usando qualquer app de finanças. O padrão que vai aparecer costuma surpreender — e mudar.',
+  },
+  geracaoAlpha: {
+    icon: '🎮',
+    title: 'Atenção: golpes dentro de jogos e apps',
+    tip: 'Seu perfil é 100% nativo digital — mas isso também atrai golpistas especializados em plataformas. Desconfie de "itens grátis", sorteios dentro de jogos e links enviados por desconhecidos no chat. Nunca compartilhe dados de pagamento fora dos canais oficiais. Lembre-se: nenhuma empresa legítima pede sua senha ou código de verificação.',
+  },
+};
+
 export default function Results() {
   const navigate = useNavigate();
   const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
