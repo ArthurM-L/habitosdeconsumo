@@ -60,7 +60,7 @@ export default function Results() {
 
   const chartData = sorted.map((r) => {
     const g = groups.find((gp) => gp.id === r.groupId);
-    return { name: g?.name ?? r.groupId, value: r.percentage, color: g?.color ?? '#6366F1' };
+    return { name: g?.name ?? r.groupId, value: r.percentage, color: g?.color ?? '#B4FF00' };
   });
 
   const handleCopy = async () => {

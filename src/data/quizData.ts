@@ -72,7 +72,7 @@ export const groups: Group[] = [
   {
     id: 'grupoA',
     name: 'Analítico',
-    color: '#6366F1',
+    color: '#B4FF00',
     icon: '🧠',
     description:
       'Você toma decisões baseadas em lógica, dados e processos bem definidos. Seu perfil tende à precisão e organização.',
@@ -92,7 +92,7 @@ export const groups: Group[] = [
   {
     id: 'grupoC',
     name: 'Executor',
-    color: '#10B981',
+    color: '#22D3A0',
     icon: '⚡',
     description:
       'Você valoriza estabilidade, consistência e entrega resultados de forma confiável e estruturada.',
