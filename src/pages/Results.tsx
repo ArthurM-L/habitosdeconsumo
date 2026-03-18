@@ -41,8 +41,21 @@ export default function Results() {
     const save = async () => {
       const scoresObj: Record<string, number> = {};
       results.forEach((r) => { scoresObj[r.groupId] = r.percentage; });
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sessionPayload: any = {
+        results: scoresObj,
+        user_name: userInfo?.name ?? null,
+        user_gender: userInfo?.gender ?? null,
+        user_birthdate: userInfo?.birthdate ?? null,
+      };
+
       const { data: session, error } = await supabase
-        .from('quiz_sessions').insert({ results: scoresObj }).select().single();
+        .from('quiz_sessions')
+        .insert(sessionPayload)
+        .select()
+        .single();
+
       if (error || !session) return;
       if (answers.length > 0) {
         await supabase.from('quiz_answers').insert(
@@ -51,7 +64,7 @@ export default function Results() {
       }
     };
     save();
-  }, [results, answers]);
+  }, [results, answers, userInfo]);
 
   const sorted = [...results].sort((a, b) => b.percentage - a.percentage);
   const primary = sorted[0];

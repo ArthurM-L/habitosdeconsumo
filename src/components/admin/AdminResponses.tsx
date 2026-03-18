@@ -6,6 +6,9 @@ interface Session {
   id: string;
   created_at: string;
   results: Record<string, number>;
+  user_name?: string | null;
+  user_gender?: string | null;
+  user_birthdate?: string | null;
 }
 
 export default function AdminResponses() {
@@ -15,7 +18,7 @@ export default function AdminResponses() {
   useEffect(() => {
     supabase
       .from('quiz_sessions')
-      .select('id, created_at, results')
+      .select('id, created_at, results, user_name, user_gender, user_birthdate')
       .order('created_at', { ascending: false })
       .limit(50)
       .then(({ data }) => {
@@ -25,7 +28,6 @@ export default function AdminResponses() {
   }, []);
 
   if (loading) return <p className="text-muted-foreground text-center py-8">Carregando respostas...</p>;
-
   if (!sessions.length) return <p className="text-muted-foreground text-center py-8">Nenhuma resposta ainda.</p>;
 
   return (
@@ -34,9 +36,12 @@ export default function AdminResponses() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="text-left px-5 py-3 text-muted-foreground font-medium">Data</th>
+              <th className="text-left px-4 py-3 text-muted-foreground font-medium whitespace-nowrap">Data</th>
+              <th className="text-left px-4 py-3 text-muted-foreground font-medium whitespace-nowrap">Nome</th>
+              <th className="text-left px-4 py-3 text-muted-foreground font-medium whitespace-nowrap">Gênero</th>
+              <th className="text-left px-4 py-3 text-muted-foreground font-medium whitespace-nowrap">Nascimento</th>
               {groups.map((g) => (
-                <th key={g.id} className="text-left px-5 py-3 text-muted-foreground font-medium">
+                <th key={g.id} className="text-left px-4 py-3 text-muted-foreground font-medium whitespace-nowrap">
                   <span style={{ color: g.color }}>{g.icon}</span> {g.name}
                 </th>
               ))}
@@ -45,11 +50,22 @@ export default function AdminResponses() {
           <tbody>
             {sessions.map((s, i) => (
               <tr key={s.id} className={i % 2 === 0 ? 'bg-muted/20' : ''}>
-                <td className="px-5 py-3 text-muted-foreground text-xs">
+                <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">
                   {new Date(s.created_at).toLocaleString('pt-BR')}
                 </td>
+                <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">
+                  {s.user_name ?? <span className="text-muted-foreground/40">—</span>}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground whitespace-nowrap capitalize">
+                  {s.user_gender ?? <span className="opacity-40">—</span>}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
+                  {s.user_birthdate
+                    ? new Date(s.user_birthdate + 'T00:00:00').toLocaleDateString('pt-BR')
+                    : <span className="opacity-40">—</span>}
+                </td>
                 {groups.map((g) => (
-                  <td key={g.id} className="px-5 py-3 font-bold" style={{ color: g.color }}>
+                  <td key={g.id} className="px-4 py-3 font-bold whitespace-nowrap" style={{ color: g.color }}>
                     {s.results?.[g.id] ?? 0}%
                   </td>
                 ))}
