@@ -42,25 +42,24 @@ export default function Results() {
       const scoresObj: Record<string, number> = {};
       results.forEach((r) => { scoresObj[r.groupId] = r.percentage; });
 
-      const sessionPayload: Record<string, unknown> = { results: scoresObj };
-      if (userInfo?.name) sessionPayload.user_name = userInfo.name;
-      if (userInfo?.gender) sessionPayload.user_gender = userInfo.gender;
-      if (userInfo?.birthdate) sessionPayload.user_birthdate = userInfo.birthdate;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const sessionPayload: any = {
+        results: scoresObj,
+        user_name: userInfo?.name ?? null,
+        user_gender: userInfo?.gender ?? null,
+        user_birthdate: userInfo?.birthdate ?? null,
+      };
 
       const { data: session, error } = await supabase
-        .from('quiz_sessions').insert(sessionPayload as Parameters<typeof supabase.from<'quiz_sessions'>>[0] extends never ? never : never).select().single();
-
-      // Use a typed cast since types.ts hasn't refreshed yet
-      const { data: sess, error: sessErr } = await (supabase as ReturnType<typeof import('@/integrations/supabase/client').supabase.from> extends never ? never : typeof supabase)
         .from('quiz_sessions')
-        .insert(sessionPayload as { results: Record<string, number>; user_name?: string; user_gender?: string; user_birthdate?: string })
+        .insert(sessionPayload)
         .select()
         .single();
 
-      if (sessErr || !sess) return;
+      if (error || !session) return;
       if (answers.length > 0) {
         await supabase.from('quiz_answers').insert(
-          answers.map((a) => ({ session_id: sess.id, question_id: a.questionId, answer_value: a.value }))
+          answers.map((a) => ({ session_id: session.id, question_id: a.questionId, answer_value: a.value }))
         );
       }
     };
