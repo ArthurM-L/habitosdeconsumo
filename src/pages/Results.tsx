@@ -7,7 +7,7 @@ import { useQuizStore } from '@/store/quizStore';
 import { groups } from '@/data/quizData';
 import { supabase } from '@/integrations/supabase/client';
 
-function useCountUp(target: number, duration = 1400) {
+function useCountUp(target: number, duration = 1200) {
   const [value, setValue] = useState(0);
   useEffect(() => {
     if (target === 0) return;
@@ -24,10 +24,10 @@ function useCountUp(target: number, duration = 1400) {
 }
 
 const generationRanges: Record<string, string> = {
-  geracaoX: '1965 – 1980',
-  geracaoY: '1981 – 1996',
-  geracaoZ: '1997 – 2012',
-  geracaoAlpha: '2012 – 2025',
+  geracaoX: '1965–1980',
+  geracaoY: '1981–1996',
+  geracaoZ: '1997–2012',
+  geracaoAlpha: '2012–2025',
 };
 
 export default function Results() {
@@ -48,7 +48,6 @@ export default function Results() {
     const save = async () => {
       const scoresObj: Record<string, number> = {};
       results.forEach((r) => { scoresObj[r.groupId] = r.percentage; });
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sessionPayload: any = {
         results: scoresObj,
@@ -56,13 +55,11 @@ export default function Results() {
         user_gender: userInfo?.gender ?? null,
         user_birthdate: userInfo?.birthdate ?? null,
       };
-
       const { data: session, error } = await supabase
         .from('quiz_sessions')
         .insert(sessionPayload)
         .select()
         .single();
-
       if (error || !session) return;
       if (answers.length > 0) {
         await supabase.from('quiz_answers').insert(
@@ -95,186 +92,203 @@ export default function Results() {
   if (!primary || !primaryGroup) {
     return (
       <div className="min-h-screen mesh-bg flex items-center justify-center">
-        <p className="text-muted-foreground">Carregando resultados...</p>
+        <p className="text-muted-foreground text-sm">Carregando resultados...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mesh-bg px-4 pt-6 pb-32">
-      <div className="max-w-md mx-auto space-y-4">
+    <div className="min-h-screen mesh-bg">
+      <div className="px-4 pt-8 pb-32 max-w-md mx-auto space-y-3">
 
-        {/* Header */}
+        {/* ── Greeting ── */}
         <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: -12 }}
+          className="text-center pb-1"
+          initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.4 }}
         >
-          <p className="text-muted-foreground text-xs mb-0.5 uppercase tracking-widest font-display">Seu resultado</p>
-          <h1 className="font-display text-xl sm:text-2xl font-extrabold">
+          <p className="text-muted-foreground text-[11px] uppercase tracking-widest font-display mb-0.5">
+            Seu resultado
+          </p>
+          <h1 className="font-display text-xl font-extrabold text-foreground">
             {userInfo?.name ? `Olá, ${userInfo.name.split(' ')[0]}! 🎉` : 'Perfil encontrado! 🎉'}
           </h1>
         </motion.div>
 
-        {/* Primary hero card */}
+        {/* ── Hero: icon + percentage + name side by side ── */}
         <motion.div
-          className="rounded-3xl p-5 text-center relative overflow-hidden"
-          style={{ background: primaryGroup.color + '14', border: `1.5px solid ${primaryGroup.color}40` }}
-          initial={{ opacity: 0, scale: 0.94 }}
+          className="rounded-3xl p-5 relative overflow-hidden"
+          style={{
+            background: primaryGroup.color + '12',
+            border: `1.5px solid ${primaryGroup.color}38`,
+          }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.12, duration: 0.45 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
         >
+          {/* ambient glow */}
           <div className="absolute inset-0 pointer-events-none"
-            style={{ background: `radial-gradient(circle at 50% 20%, ${primaryGroup.color}20, transparent 65%)` }} />
+            style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${primaryGroup.color}18, transparent 70%)` }} />
 
-          <div className="relative z-10">
+          <div className="relative z-10 flex items-center gap-4">
+            {/* Icon + badge */}
             <motion.div
-              className="text-6xl mb-2"
-              initial={{ scale: 0.5, rotate: -15 }}
+              className="shrink-0 flex flex-col items-center gap-1.5"
+              initial={{ scale: 0.5, rotate: -12 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.28, type: 'spring', stiffness: 220 }}
+              transition={{ delay: 0.25, type: 'spring', stiffness: 240 }}
             >
-              {primaryGroup.icon}
+              <span className="text-[3.5rem] leading-none">{primaryGroup.icon}</span>
+              {generationRanges[primaryGroup.id] && (
+                <span
+                  className="text-[9px] font-bold font-display px-2 py-0.5 rounded-full whitespace-nowrap"
+                  style={{ background: primaryGroup.color + '22', color: primaryGroup.color }}
+                >
+                  {generationRanges[primaryGroup.id]}
+                </span>
+              )}
             </motion.div>
 
-            <h2 className="font-display text-lg font-extrabold mb-1" style={{ color: primaryGroup.color }}>
-              {primaryGroup.name}
-            </h2>
-
-            {generationRanges[primaryGroup.id] && (
-              <span
-                className="inline-block text-xs font-semibold font-display px-3 py-0.5 rounded-full mb-1"
-                style={{ background: primaryGroup.color + '20', color: primaryGroup.color }}
-              >
-                {generationRanges[primaryGroup.id]}
-              </span>
-            )}
-
-            <PrimaryPercentage value={primary.percentage} color={primaryGroup.color} />
-
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mx-auto mt-2">
-              {primaryGroup.description}
-            </p>
+            {/* Text + count-up */}
+            <div className="flex-1 min-w-0">
+              <h2 className="font-display font-extrabold text-base leading-tight mb-0.5" style={{ color: primaryGroup.color }}>
+                {primaryGroup.name}
+              </h2>
+              <PrimaryPercentage value={primary.percentage} color={primaryGroup.color} />
+              <p className="text-muted-foreground text-[11px] leading-snug mt-1 line-clamp-3">
+                {primaryGroup.description}
+              </p>
+            </div>
           </div>
         </motion.div>
 
-        {/* Secondary groups — 2-column grid, no horizontal scroll */}
-        {secondaries.length > 0 && (
-          <motion.div
-            className="grid grid-cols-3 gap-2"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+        {/* ── Chart + Secondary grid side by side ── */}
+        <motion.div
+          className="grid grid-cols-2 gap-3"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+        >
+          {/* Donut */}
+          <div className="glass rounded-3xl p-3 flex flex-col">
+            <p className="font-display font-bold text-[10px] text-muted-foreground uppercase tracking-wider text-center mb-2">
+              Distribuição
+            </p>
+            <div className="flex-1" style={{ height: 110 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={chartData}
+                    cx="50%" cy="50%"
+                    innerRadius={30} outerRadius={48}
+                    paddingAngle={3}
+                    dataKey="value"
+                    isAnimationActive
+                    animationBegin={350}
+                    animationDuration={1000}
+                  >
+                    {chartData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      background: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '10px',
+                      fontSize: 11,
+                    }}
+                    formatter={(v: number) => [`${v}%`]}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            {/* legend */}
+            <div className="flex flex-col gap-1 mt-2">
+              {chartData.map((d) => (
+                <div key={d.name} className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.color }} />
+                  <span className="text-[9px] text-muted-foreground leading-none">{d.name}</span>
+                  <span className="ml-auto text-[9px] font-bold" style={{ color: d.color }}>{d.value}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Secondary cards stacked */}
+          <div className="flex flex-col gap-2">
+            <p className="font-display font-bold text-[10px] text-muted-foreground uppercase tracking-wider text-center">
+              Outras gerações
+            </p>
             {secondaries.map((r) => {
               const g = groups.find((gp) => gp.id === r.groupId);
               if (!g) return null;
               return (
                 <div
                   key={r.groupId}
-                  className="glass rounded-2xl p-3 text-center"
-                  style={{ borderColor: g.color + '30' }}
+                  className="glass rounded-2xl px-3 py-2.5 flex items-center gap-2"
+                  style={{ borderColor: g.color + '28' }}
                 >
-                  <div className="text-2xl mb-1">{g.icon}</div>
-                  <div className="font-display font-bold text-[11px] mb-0.5 text-foreground leading-tight">{g.name}</div>
-                  <div className="font-bold text-base" style={{ color: g.color }}>{r.percentage}%</div>
+                  <span className="text-xl leading-none shrink-0">{g.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-display font-bold text-[10px] text-foreground truncate">{g.name}</div>
+                    <div className="font-extrabold text-sm leading-tight" style={{ color: g.color }}>{r.percentage}%</div>
+                  </div>
+                  {/* mini bar */}
+                  <div className="w-10 h-1 rounded-full overflow-hidden shrink-0" style={{ background: 'hsl(var(--muted))' }}>
+                    <div className="h-full rounded-full" style={{ width: `${r.percentage}%`, background: g.color }} />
+                  </div>
                 </div>
               );
             })}
-          </motion.div>
-        )}
-
-        {/* Donut chart */}
-        <motion.div
-          className="glass rounded-3xl p-4"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.42 }}
-        >
-          <h3 className="font-display font-bold text-xs text-muted-foreground uppercase tracking-wider mb-3 text-center">
-            Distribuição do perfil
-          </h3>
-          <div className="h-36">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={chartData}
-                  cx="50%" cy="50%"
-                  innerRadius={38} outerRadius={60}
-                  paddingAngle={4}
-                  dataKey="value"
-                  isAnimationActive
-                  animationBegin={400}
-                  animationDuration={1100}
-                >
-                  {chartData.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '12px',
-                    fontSize: 12,
-                  }}
-                  formatter={(v: number) => [`${v}%`]}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Legend — wrap to avoid overflow */}
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mt-1">
-            {chartData.map((d) => (
-              <div key={d.name} className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: d.color }} />
-                <span className="text-xs text-muted-foreground">{d.name}</span>
-              </div>
-            ))}
           </div>
         </motion.div>
 
-        {/* Interpretation */}
+        {/* ── Interpretation ── */}
         <motion.div
           className="glass rounded-3xl p-4"
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.55 }}
+          transition={{ delay: 0.4 }}
         >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-1 h-5 rounded-full gradient-bg shrink-0" />
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className="w-0.5 h-5 rounded-full gradient-bg shrink-0" />
             <h3 className="font-display font-bold text-sm text-foreground">O que isso significa?</h3>
           </div>
-          <p className="text-muted-foreground text-sm leading-relaxed">{primaryGroup.interpretation}</p>
+          <p className="text-muted-foreground text-[13px] leading-relaxed">{primaryGroup.interpretation}</p>
         </motion.div>
 
       </div>
 
-      {/* Pinned CTA */}
+      {/* ── Pinned CTA ── */}
       <motion.div
         className="fixed bottom-0 left-0 right-0 px-4 pb-8 pt-3 z-20"
-        style={{ background: 'linear-gradient(to top, hsl(var(--background)) 65%, transparent)' }}
+        style={{ background: 'linear-gradient(to top, hsl(var(--background)) 70%, transparent)' }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.75 }}
+        transition={{ delay: 0.6 }}
       >
-        <div className="flex gap-3 max-w-md mx-auto">
+        <div className="flex gap-2.5 max-w-md mx-auto">
           <button
             onClick={handleRetry}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-display font-bold text-sm glass border-border hover:border-primary/50 transition-all active:scale-95"
+            className="flex items-center justify-center gap-1.5 px-4 py-3.5 rounded-2xl font-display font-bold text-sm glass border-border hover:border-primary/40 transition-all active:scale-95 shrink-0"
           >
             <RotateCcw className="w-4 h-4" />
             Refazer
           </button>
           <button
             onClick={handleCopy}
-            className="flex-[2] flex items-center justify-center gap-2 py-3 rounded-2xl font-display font-bold text-sm gradient-bg text-primary-foreground transition-all active:scale-95"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl font-display font-bold text-sm gradient-bg text-primary-foreground transition-all active:scale-95"
           >
             <AnimatePresence mode="wait">
               {copied
-                ? <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2"><Check className="w-4 h-4" /> Copiado!</motion.span>
-                : <motion.span key="share" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2"><Share2 className="w-4 h-4" /> Compartilhar</motion.span>
+                ? <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2">
+                    <Check className="w-4 h-4" /> Copiado!
+                  </motion.span>
+                : <motion.span key="share" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} className="flex items-center gap-2">
+                    <Share2 className="w-4 h-4" /> Compartilhar resultado
+                  </motion.span>
               }
             </AnimatePresence>
           </button>
@@ -285,10 +299,10 @@ export default function Results() {
 }
 
 function PrimaryPercentage({ value, color }: { value: number; color: string }) {
-  const count = useCountUp(value, 1400);
+  const count = useCountUp(value, 1200);
   return (
-    <div className="font-display text-[4.5rem] leading-none font-extrabold tabular-nums mt-1" style={{ color }}>
-      {count}<span className="text-3xl">%</span>
+    <div className="font-display font-extrabold tabular-nums leading-none" style={{ color, fontSize: '2.6rem' }}>
+      {count}<span style={{ fontSize: '1.4rem' }}>%</span>
     </div>
   );
 }
