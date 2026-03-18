@@ -56,13 +56,13 @@ export default function Landing() {
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <h1 className="font-display text-[2.6rem] sm:text-5xl font-extrabold leading-[1.15] tracking-tight mb-4">
-            Descubra seu <br />
-            <span className="gradient-text">perfil de consumo</span>
+            Qual geração de<br />
+            <span className="gradient-text">consumidor</span>
             <br />
-            online. 🛒
+            é você? 🛒
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm">
-            Responda 10 afirmações sobre seus hábitos de compra e descubra como você se comporta no comércio digital.
+            Responda 10 afirmações sobre seus hábitos de compra e descubra com qual geração — X, Millennial, Z ou Alpha — seu perfil de consumo mais se identifica.
           </p>
         </motion.div>
 
