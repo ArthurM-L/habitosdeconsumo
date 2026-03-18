@@ -93,7 +93,7 @@ export default function Results() {
         >
           <p className="text-muted-foreground text-sm mb-1">Seu resultado</p>
           <h1 className="font-display text-2xl sm:text-3xl font-extrabold">
-            Perfil encontrado! 🎉
+            {userInfo?.name ? `Olá, ${userInfo.name.split(' ')[0]}! 🎉` : 'Perfil encontrado! 🎉'}
           </h1>
         </motion.div>
 
