@@ -44,7 +44,7 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-1.5 glass rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground">
             <Zap className="w-3 h-3 text-warning" />
-            10 perguntas
+            13 perguntas
           </div>
         </motion.div>
 
