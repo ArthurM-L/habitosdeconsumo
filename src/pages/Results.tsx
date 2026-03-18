@@ -30,6 +30,29 @@ const generationRanges: Record<string, string> = {
   geracaoAlpha: '2012–2025',
 };
 
+const generationAlerts: Record<string, { icon: string; title: string; tip: string }> = {
+  geracaoX: {
+    icon: '🔐',
+    title: 'Atenção: golpes por e-mail e WhatsApp',
+    tip: 'Seu perfil demonstra alta cautela digital — ótimo! Reforce esse instinto: desconfie de links recebidos por e-mail ou mensagem, mesmo que pareçam vir de bancos ou marketplaces. Antes de clicar, acesse o site diretamente pelo navegador. Golpistas sabem que a Geração X valoriza segurança e exploram isso com páginas falsas muito convincentes.',
+  },
+  geracaoY: {
+    icon: '💳',
+    title: 'Atenção: o risco do superendividamento',
+    tip: 'Millennials são a geração mais propensa ao superendividamento no Brasil. O acesso fácil ao crédito, combinado com estímulos constantes nas redes sociais, cria armadilhas invisíveis. Antes de parcelar, pergunte-se: "preciso disso agora ou estou comprando para me sentir melhor?" Regra prática: nunca comprometa mais de 30% da sua renda com parcelas.',
+  },
+  geracaoZ: {
+    icon: '🛍️',
+    title: 'Atenção: o Efeito Batom no seu bolso',
+    tip: 'O "Efeito Batom" é real para o seu perfil: pequenas compras frequentes — R$20 aqui, R$35 ali — parecem inofensivas, mas somadas superam facilmente grandes gastos planejados. Rastreie seus micro-consumos por 30 dias usando qualquer app de finanças. O padrão que vai aparecer costuma surpreender — e mudar.',
+  },
+  geracaoAlpha: {
+    icon: '🎮',
+    title: 'Atenção: golpes dentro de jogos e apps',
+    tip: 'Seu perfil é 100% nativo digital — mas isso também atrai golpistas especializados em plataformas. Desconfie de "itens grátis", sorteios dentro de jogos e links enviados por desconhecidos no chat. Nunca compartilhe dados de pagamento fora dos canais oficiais. Lembre-se: nenhuma empresa legítima pede sua senha ou código de verificação.',
+  },
+};
+
 export default function Results() {
   const navigate = useNavigate();
   const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
@@ -258,6 +281,38 @@ export default function Results() {
           </div>
           <p className="text-muted-foreground text-[13px] leading-relaxed">{primaryGroup.interpretation}</p>
         </motion.div>
+
+        {/* ── Personalized Alert ── */}
+        {generationAlerts[primaryGroup.id] && (() => {
+          const alert = generationAlerts[primaryGroup.id];
+          return (
+            <motion.div
+              className="rounded-3xl p-4 relative overflow-hidden"
+              style={{
+                background: 'hsl(var(--warning) / 0.08)',
+                border: '1.5px solid hsl(var(--warning) / 0.3)',
+              }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.52 }}
+            >
+              {/* subtle glow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--warning) / 0.07), transparent 70%)' }} />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2.5">
+                  <span className="text-xl leading-none">{alert.icon}</span>
+                  <h3 className="font-display font-bold text-sm" style={{ color: 'hsl(var(--warning))' }}>
+                    {alert.title}
+                  </h3>
+                </div>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'hsl(var(--foreground) / 0.75)' }}>
+                  {alert.tip}
+                </p>
+              </div>
+            </motion.div>
+          );
+        })()}
 
       </div>
 
