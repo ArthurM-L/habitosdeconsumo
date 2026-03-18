@@ -25,7 +25,7 @@ function useCountUp(target: number, duration = 1400) {
 
 export default function Results() {
   const navigate = useNavigate();
-  const { results, answers, resetQuiz, phase } = useQuizStore();
+  const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
   const [copied, setCopied] = useState(false);
   const savedRef = useRef(false);
 

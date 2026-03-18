@@ -55,13 +55,13 @@ export default function Landing() {
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <h1 className="font-display text-[2.6rem] sm:text-5xl font-extrabold leading-[1.15] tracking-tight mb-4">
-            Descubra qual <br />
-            <span className="gradient-text">perfil profissional</span>
+            Descubra seu <br />
+            <span className="gradient-text">perfil de consumo</span>
             <br />
-            é o seu. 🎯
+            online. 🛒
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm">
-            Responda 10 perguntas e receba um perfil personalizado com base nas suas tendências reais.
+            Responda 10 afirmações sobre seus hábitos de compra e descubra como você se comporta no comércio digital.
           </p>
         </motion.div>
 
