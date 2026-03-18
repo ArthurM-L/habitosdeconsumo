@@ -212,9 +212,9 @@ export default function Quiz() {
               </div>
             </div>
 
-            {/* Likert options: 2 top + 3 bottom */}
+            {/* Likert options: 2 top + 3 bottom — fills remaining space */}
             <div className="flex flex-col gap-2.5 flex-1">
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -223,10 +223,11 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
+                    stretch
                   />
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2.5">
+              <div className="grid grid-cols-3 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -235,6 +236,7 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
+                    stretch
                   />
                 ))}
               </div>
@@ -282,13 +284,14 @@ export default function Quiz() {
 
 // ── LikertCard ──
 function LikertCard({
-  opt, isSelected, showCheck, onSelect, color,
+  opt, isSelected, showCheck, onSelect, color, stretch,
 }: {
   opt: { value: 1 | 2 | 3 | 4 | 5; emoji: string; label: string };
   isSelected: boolean;
   showCheck: boolean;
   onSelect: (v: 1 | 2 | 3 | 4 | 5) => void;
   color: string;
+  stretch?: boolean;
 }) {
   return (
     <motion.button
@@ -296,7 +299,7 @@ function LikertCard({
       disabled={showCheck}
       whileHover={!showCheck ? { y: -2, scale: 1.02 } : {}}
       whileTap={!showCheck ? { scale: 0.96 } : {}}
-      className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none"
+      className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none${stretch ? ' w-full h-full' : ''}`}
       style={{
         minHeight: '80px',
         padding: '14px 8px',
