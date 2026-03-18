@@ -66,9 +66,9 @@ export default function Landing() {
           </p>
         </motion.div>
 
-        {/* Profile preview cards */}
+        {/* Profile preview cards — 4 groups, 2x2 grid */}
         <motion.div
-          className="flex gap-3 mt-8 mb-2"
+          className="grid grid-cols-2 gap-3 mt-8 mb-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -76,7 +76,7 @@ export default function Landing() {
           {profiles.map((p, i) => (
             <motion.div
               key={p.name}
-              className="flex-1 glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
+              className="glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 + i * 0.1 }}
