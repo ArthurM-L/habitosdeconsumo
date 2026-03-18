@@ -108,15 +108,10 @@ export default function Loading() {
         {steps.map((_, i) => (
           <motion.div
             key={i}
-            className="rounded-full"
-            style={{ background: 'hsl(var(--primary))' }}
-            animate={{
-              width: i === stepIndex ? 24 : 8,
-              opacity: i <= stepIndex ? 1 : 0.3,
-            }}
+            className="h-2 rounded-full"
+            style={{ background: 'hsl(var(--primary))', opacity: i <= stepIndex ? 1 : 0.3 }}
+            animate={{ width: i === stepIndex ? 24 : 8 }}
             transition={{ duration: 0.3 }}
-            layout
-            style2={{ height: 8 }}
           />
         ))}
       </div>
