@@ -41,7 +41,7 @@ export default function AdminGroups() {
     if (!newGroup.id || !newGroup.name) return;
     setAdding(true);
     await supabase.from('groups').insert(newGroup as { id: string; name: string; color: string; icon: string; description: string });
-    setNewGroup({ id: '', name: '', color: '#6366F1', icon: '🌟', description: '' });
+    setNewGroup({ id: '', name: '', color: '#B4FF00', icon: '🌟', description: '' });
     setAdding(false);
     fetchGroups();
   };
