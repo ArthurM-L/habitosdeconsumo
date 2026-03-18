@@ -299,7 +299,7 @@ function LikertCard({
       disabled={showCheck}
       whileHover={!showCheck ? { y: -2, scale: 1.02 } : {}}
       whileTap={!showCheck ? { scale: 0.96 } : {}}
-      className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none"
+      className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none${stretch ? ' w-full h-full' : ''}`}
       style={{
         minHeight: '80px',
         padding: '14px 8px',
