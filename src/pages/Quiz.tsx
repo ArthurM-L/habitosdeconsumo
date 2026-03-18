@@ -121,7 +121,6 @@ export default function Quiz() {
                 >
                   <motion.div
                     className="h-full rounded-full"
-                    style={{ background: 'var(--gradient-progress)' }}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: i < currentQuestion + (showCheck ? 1 : 0) ? 1 : 0 }}
                     transition={{ duration: 0.4, ease: 'easeOut', delay: i < currentQuestion ? 0 : 0.1 }}
