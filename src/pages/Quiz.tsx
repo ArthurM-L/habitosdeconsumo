@@ -11,13 +11,13 @@ const motivationalMessages: Record<number, string> = {
   7: 'Quase lá! Só mais 3 ⭐',
 };
 
-// Color per likert value
+// Color per likert value — Acid Lime gradient scale
 const likertColors: Record<number, string> = {
-  1: 'hsl(0 84% 60%)',
-  2: 'hsl(25 90% 55%)',
-  3: 'hsl(38 92% 50%)',
-  4: 'hsl(150 60% 45%)',
-  5: 'hsl(158 64% 40%)',
+  1: 'hsl(0 80% 55%)',
+  2: 'hsl(25 90% 52%)',
+  3: 'hsl(60 90% 50%)',
+  4: 'hsl(77 100% 48%)',
+  5: 'hsl(77 100% 50%)',
 };
 
 const slideVariants = {

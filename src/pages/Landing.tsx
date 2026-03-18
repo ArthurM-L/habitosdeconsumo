@@ -4,9 +4,9 @@ import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 
 const profiles = [
-  { icon: '🧠', name: 'Analítico', color: 'hsl(243 75% 63%)' },
+  { icon: '🧠', name: 'Analítico', color: 'hsl(77 100% 50%)' },
   { icon: '🚀', name: 'Inovador', color: 'hsl(38 92% 50%)' },
-  { icon: '⚡', name: 'Executor', color: 'hsl(158 64% 37%)' },
+  { icon: '⚡', name: 'Executor', color: 'hsl(142 60% 42%)' },
 ];
 
 export default function Landing() {
@@ -23,10 +23,10 @@ export default function Landing() {
   return (
     <div className="relative min-h-screen flex flex-col mesh-bg overflow-hidden">
       {/* Decorative background blobs */}
-      <div className="absolute top-0 left-0 w-72 h-72 rounded-full opacity-20 blur-3xl pointer-events-none"
-        style={{ background: 'hsl(243 75% 63%)' }} />
-      <div className="absolute bottom-20 right-0 w-64 h-64 rounded-full opacity-15 blur-3xl pointer-events-none"
-        style={{ background: 'hsl(270 60% 58%)' }} />
+      <div className="absolute top-0 left-0 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none"
+        style={{ background: 'hsl(77 100% 50%)' }} />
+      <div className="absolute bottom-20 right-0 w-64 h-64 rounded-full opacity-8 blur-3xl pointer-events-none"
+        style={{ background: 'hsl(120 80% 45%)' }} />
 
       {/* Main content — scrollable area */}
       <div className="flex-1 flex flex-col justify-center px-5 pt-14 pb-36">

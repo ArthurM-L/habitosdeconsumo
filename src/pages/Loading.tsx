@@ -53,8 +53,8 @@ export default function Loading() {
         <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
           <defs>
             <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(243 75% 63%)" />
-              <stop offset="100%" stopColor="hsl(330 80% 65%)" />
+              <stop offset="0%" stopColor="hsl(77 100% 50%)" />
+              <stop offset="100%" stopColor="hsl(120 80% 45%)" />
             </linearGradient>
           </defs>
           <circle cx="50" cy="50" r="44" fill="none" stroke="hsl(var(--muted))" strokeWidth="5" />
