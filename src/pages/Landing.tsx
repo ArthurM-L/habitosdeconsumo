@@ -4,9 +4,9 @@ import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 
 const profiles = [
-  { icon: '🧠', name: 'Analítico', color: 'hsl(77 100% 50%)' },
-  { icon: '🚀', name: 'Inovador', color: 'hsl(38 92% 50%)' },
-  { icon: '⚡', name: 'Executor', color: 'hsl(142 60% 42%)' },
+  { icon: '📱', name: 'Digital', color: 'hsl(77 100% 50%)' },
+  { icon: '🛡️', name: 'Cauteloso', color: 'hsl(38 92% 50%)' },
+  { icon: '⚡', name: 'Impulsivo', color: 'hsl(142 60% 42%)' },
 ];
 
 export default function Landing() {
