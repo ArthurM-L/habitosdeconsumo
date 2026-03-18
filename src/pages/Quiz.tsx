@@ -284,13 +284,14 @@ export default function Quiz() {
 
 // ── LikertCard ──
 function LikertCard({
-  opt, isSelected, showCheck, onSelect, color,
+  opt, isSelected, showCheck, onSelect, color, stretch,
 }: {
   opt: { value: 1 | 2 | 3 | 4 | 5; emoji: string; label: string };
   isSelected: boolean;
   showCheck: boolean;
   onSelect: (v: 1 | 2 | 3 | 4 | 5) => void;
   color: string;
+  stretch?: boolean;
 }) {
   return (
     <motion.button
