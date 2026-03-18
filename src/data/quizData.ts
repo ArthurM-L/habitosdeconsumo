@@ -15,90 +15,104 @@ export interface Group {
   interpretation: string;
 }
 
+export interface UserInfo {
+  name: string;
+  gender: string;
+  birthdate: string;
+}
+
 export const questions: Question[] = [
   {
     id: 1,
-    text: 'Prefiro tomar decisões baseadas em dados e análises.',
-    weights: { grupoA: 0.9, grupoB: 0.2, grupoC: 0.4 },
+    text: 'Realizo compras pela internet com frequência.',
+    weights: { digital: 0.9, seguranca: 0.2, impulso: 0.3 },
   },
   {
     id: 2,
-    text: 'Gosto de experimentar coisas novas com frequência.',
-    weights: { grupoA: 0.3, grupoB: 0.8, grupoC: 0.5 },
+    text: 'Evito realizar compras online por receio de fraudes ou golpes digitais.',
+    weights: { digital: 0.1, seguranca: 0.9, impulso: 0.1 },
   },
   {
     id: 3,
-    text: 'Me sinto confortável liderando equipes em situações de pressão.',
-    weights: { grupoA: 0.7, grupoB: 0.5, grupoC: 0.2 },
+    text: 'Descubro novos produtos e serviços principalmente por meio de canais digitais (redes sociais, anúncios, sites especializados).',
+    weights: { digital: 0.8, seguranca: 0.3, impulso: 0.5 },
   },
   {
     id: 4,
-    text: 'Prefiro rotinas previsíveis a ambientes dinâmicos.',
-    weights: { grupoA: 0.2, grupoB: 0.1, grupoC: 0.9 },
+    text: 'Prefiro métodos de pagamento eletrônicos (cartão de crédito/débito ou carteiras digitais) ao realizar compras online.',
+    weights: { digital: 0.8, seguranca: 0.4, impulso: 0.3 },
   },
   {
     id: 5,
-    text: 'Tenho facilidade em comunicar ideias complexas de forma simples.',
-    weights: { grupoA: 0.6, grupoB: 0.7, grupoC: 0.3 },
+    text: 'As avaliações de outros consumidores influenciam minha decisão de compra online.',
+    weights: { digital: 0.5, seguranca: 0.7, impulso: 0.4 },
   },
   {
     id: 6,
-    text: 'Busco constantemente aprender novas habilidades.',
-    weights: { grupoA: 0.5, grupoB: 0.9, grupoC: 0.2 },
+    text: 'A presença de selos de segurança ou certificações em um site aumenta minha confiança ao comprar.',
+    weights: { digital: 0.3, seguranca: 0.9, impulso: 0.1 },
   },
   {
     id: 7,
-    text: 'Priorizo estabilidade e segurança nas minhas escolhas.',
-    weights: { grupoA: 0.2, grupoB: 0.1, grupoC: 0.8 },
+    text: 'Promoções temporárias, cupons ou ofertas relâmpago influenciam minha decisão de compra.',
+    weights: { digital: 0.5, seguranca: 0.2, impulso: 0.8 },
   },
   {
     id: 8,
-    text: 'Me energizo ao trabalhar em colaboração com outras pessoas.',
-    weights: { grupoA: 0.4, grupoB: 0.6, grupoC: 0.5 },
+    text: 'Tenho tendência a realizar compras por impulso, sem planejamento prévio.',
+    weights: { digital: 0.3, seguranca: 0.1, impulso: 0.9 },
   },
   {
     id: 9,
-    text: 'Gosto de criar sistemas e processos para organizar o trabalho.',
-    weights: { grupoA: 0.8, grupoB: 0.3, grupoC: 0.6 },
+    text: 'Utilizo o celular como principal dispositivo para realizar compras online (em sites ou aplicativos).',
+    weights: { digital: 0.9, seguranca: 0.3, impulso: 0.4 },
   },
   {
     id: 10,
-    text: 'Prefiro agir rapidamente mesmo com informações incompletas.',
-    weights: { grupoA: 0.3, grupoB: 0.9, grupoC: 0.1 },
+    text: 'Prefiro comprar em marketplaces consolidados (como Amazon ou Mercado Livre) a comprar diretamente em lojas virtuais independentes.',
+    weights: { digital: 0.6, seguranca: 0.8, impulso: 0.3 },
   },
 ];
 
 export const groups: Group[] = [
   {
-    id: 'grupoA',
-    name: 'Analítico',
+    id: 'digital',
+    name: 'Consumidor Digital',
     color: '#B4FF00',
-    icon: '🧠',
+    icon: '📱',
     description:
-      'Você toma decisões baseadas em lógica, dados e processos bem definidos. Seu perfil tende à precisão e organização.',
+      'Você é um consumidor nativo digital — confortável com tecnologia, ativo em canais online e aberto a novas plataformas de compra.',
     interpretation:
-      'Seu forte pensamento analítico é uma superpotência. Você encontra padrões onde outros veem caos, e transforma dados em decisões inteligentes. Ambientes estruturados onde a lógica prevalece são onde você mais brilha.',
+      'Sua fluidez no ambiente digital é uma vantagem competitiva. Você navega com naturalidade entre apps, marketplaces e redes sociais para descobrir e adquirir produtos, aproveitando ao máximo as conveniências do comércio eletrônico.',
   },
   {
-    id: 'grupoB',
-    name: 'Inovador',
+    id: 'seguranca',
+    name: 'Consumidor Cauteloso',
     color: '#F59E0B',
-    icon: '🚀',
+    icon: '🛡️',
     description:
-      'Você prospera em ambientes dinâmicos, adora experimentar e se adapta rapidamente a mudanças.',
+      'Você prioriza segurança e confiança nas suas decisões de compra, valorizando avaliações, selos e reputação das plataformas.',
     interpretation:
-      'Sua mente inovadora é um motor de criatividade. Você enxerga oportunidades onde outros veem obstáculos e tem coragem de testar o desconhecido. Ambientes em transformação e desafios inéditos são seu combustível natural.',
+      'Sua cautela é um diferencial importante. Você pesquisa antes de comprar, verifica a credibilidade dos vendedores e evita riscos desnecessários — um comportamento que resulta em compras mais satisfatórias e seguras.',
   },
   {
-    id: 'grupoC',
-    name: 'Executor',
+    id: 'impulso',
+    name: 'Consumidor Impulsivo',
     color: '#22D3A0',
     icon: '⚡',
     description:
-      'Você valoriza estabilidade, consistência e entrega resultados de forma confiável e estruturada.',
+      'Você responde rapidamente a estímulos como promoções, ofertas relâmpago e novidades, agindo com agilidade nas decisões de compra.',
     interpretation:
-      'Sua confiabilidade é inestimável. Você é o pilar que sustenta equipes e projetos, entregando consistentemente e mantendo o foco no que importa. Onde outros hesitam, você age com clareza e determinação.',
+      'Sua disposição para aproveitar oportunidades em tempo real coloca você na vanguarda das tendências de consumo. Promoções e lançamentos têm forte apelo para o seu perfil, tornando suas compras dinâmicas e orientadas ao momento.',
   },
+];
+
+export const genderOptions = [
+  { value: 'masculino', label: 'Masculino' },
+  { value: 'feminino', label: 'Feminino' },
+  { value: 'nao-binario', label: 'Não-binário' },
+  { value: 'prefiro-nao-dizer', label: 'Prefiro não dizer' },
+  { value: 'outro', label: 'Outro' },
 ];
 
 export const likertOptions = [

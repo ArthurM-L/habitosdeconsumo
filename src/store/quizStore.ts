@@ -1,6 +1,7 @@
 import { create } from 'zustand';
+import type { UserInfo } from '@/data/quizData';
 
-export type Phase = 'landing' | 'quiz' | 'loading' | 'results';
+export type Phase = 'landing' | 'intro' | 'quiz' | 'loading' | 'results';
 
 export interface Answer {
   questionId: number;
@@ -20,6 +21,7 @@ interface QuizState {
   xp: number;
   streak: number;
   results: GroupResult[];
+  userInfo: UserInfo | null;
 
   setPhase: (phase: Phase) => void;
   setCurrentQuestion: (index: number) => void;
@@ -28,6 +30,7 @@ interface QuizState {
   incrementStreak: () => void;
   resetStreak: () => void;
   setResults: (results: GroupResult[]) => void;
+  setUserInfo: (info: UserInfo) => void;
   resetQuiz: () => void;
 }
 
@@ -38,6 +41,7 @@ export const useQuizStore = create<QuizState>((set) => ({
   xp: 0,
   streak: 0,
   results: [],
+  userInfo: null,
 
   setPhase: (phase) => set({ phase }),
   setCurrentQuestion: (index) => set({ currentQuestion: index }),
@@ -49,6 +53,7 @@ export const useQuizStore = create<QuizState>((set) => ({
   incrementStreak: () => set((state) => ({ streak: state.streak + 1 })),
   resetStreak: () => set({ streak: 0 }),
   setResults: (results) => set({ results }),
+  setUserInfo: (userInfo) => set({ userInfo }),
   resetQuiz: () =>
     set({
       phase: 'landing',
@@ -57,5 +62,6 @@ export const useQuizStore = create<QuizState>((set) => ({
       xp: 0,
       streak: 0,
       results: [],
+      userInfo: null,
     }),
 }));
