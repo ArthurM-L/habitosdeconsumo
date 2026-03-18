@@ -4,9 +4,9 @@ import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 
 const profiles = [
-  { icon: '🧠', name: 'Analítico', color: 'hsl(77 100% 50%)' },
-  { icon: '🚀', name: 'Inovador', color: 'hsl(38 92% 50%)' },
-  { icon: '⚡', name: 'Executor', color: 'hsl(142 60% 42%)' },
+  { icon: '📱', name: 'Digital', color: 'hsl(77 100% 50%)' },
+  { icon: '🛡️', name: 'Cauteloso', color: 'hsl(38 92% 50%)' },
+  { icon: '⚡', name: 'Impulsivo', color: 'hsl(142 60% 42%)' },
 ];
 
 export default function Landing() {
@@ -16,8 +16,8 @@ export default function Landing() {
 
   const handleStart = () => {
     resetQuiz();
-    setPhase('quiz');
-    navigate('/quiz');
+    setPhase('intro');
+    navigate('/intro');
   };
 
   return (
@@ -44,7 +44,7 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-1.5 glass rounded-full px-3 py-1.5 text-xs font-semibold text-muted-foreground">
             <Zap className="w-3 h-3 text-warning" />
-            10 perguntas
+            13 perguntas
           </div>
         </motion.div>
 
@@ -55,13 +55,13 @@ export default function Landing() {
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <h1 className="font-display text-[2.6rem] sm:text-5xl font-extrabold leading-[1.15] tracking-tight mb-4">
-            Descubra qual <br />
-            <span className="gradient-text">perfil profissional</span>
+            Descubra seu <br />
+            <span className="gradient-text">perfil de consumo</span>
             <br />
-            é o seu. 🎯
+            online. 🛒
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm">
-            Responda 10 perguntas e receba um perfil personalizado com base nas suas tendências reais.
+            Responda 10 afirmações sobre seus hábitos de compra e descubra como você se comporta no comércio digital.
           </p>
         </motion.div>
 

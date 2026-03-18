@@ -25,7 +25,7 @@ function useCountUp(target: number, duration = 1400) {
 
 export default function Results() {
   const navigate = useNavigate();
-  const { results, answers, resetQuiz, phase } = useQuizStore();
+  const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
   const [copied, setCopied] = useState(false);
   const savedRef = useRef(false);
 
@@ -93,7 +93,7 @@ export default function Results() {
         >
           <p className="text-muted-foreground text-sm mb-1">Seu resultado</p>
           <h1 className="font-display text-2xl sm:text-3xl font-extrabold">
-            Perfil encontrado! 🎉
+            {userInfo?.name ? `Olá, ${userInfo.name.split(' ')[0]}! 🎉` : 'Perfil encontrado! 🎉'}
           </h1>
         </motion.div>
 
