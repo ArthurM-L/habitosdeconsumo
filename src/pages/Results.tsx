@@ -41,17 +41,31 @@ export default function Results() {
     const save = async () => {
       const scoresObj: Record<string, number> = {};
       results.forEach((r) => { scoresObj[r.groupId] = r.percentage; });
+
+      const sessionPayload: Record<string, unknown> = { results: scoresObj };
+      if (userInfo?.name) sessionPayload.user_name = userInfo.name;
+      if (userInfo?.gender) sessionPayload.user_gender = userInfo.gender;
+      if (userInfo?.birthdate) sessionPayload.user_birthdate = userInfo.birthdate;
+
       const { data: session, error } = await supabase
-        .from('quiz_sessions').insert({ results: scoresObj }).select().single();
-      if (error || !session) return;
+        .from('quiz_sessions').insert(sessionPayload as Parameters<typeof supabase.from<'quiz_sessions'>>[0] extends never ? never : never).select().single();
+
+      // Use a typed cast since types.ts hasn't refreshed yet
+      const { data: sess, error: sessErr } = await (supabase as ReturnType<typeof import('@/integrations/supabase/client').supabase.from> extends never ? never : typeof supabase)
+        .from('quiz_sessions')
+        .insert(sessionPayload as { results: Record<string, number>; user_name?: string; user_gender?: string; user_birthdate?: string })
+        .select()
+        .single();
+
+      if (sessErr || !sess) return;
       if (answers.length > 0) {
         await supabase.from('quiz_answers').insert(
-          answers.map((a) => ({ session_id: session.id, question_id: a.questionId, answer_value: a.value }))
+          answers.map((a) => ({ session_id: sess.id, question_id: a.questionId, answer_value: a.value }))
         );
       }
     };
     save();
-  }, [results, answers]);
+  }, [results, answers, userInfo]);
 
   const sorted = [...results].sort((a, b) => b.percentage - a.percentage);
   const primary = sorted[0];
