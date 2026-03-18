@@ -4,9 +4,10 @@ import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 
 const profiles = [
-  { icon: '📱', name: 'Digital', color: 'hsl(77 100% 50%)' },
-  { icon: '🛡️', name: 'Cauteloso', color: 'hsl(38 92% 50%)' },
-  { icon: '⚡', name: 'Impulsivo', color: 'hsl(142 60% 42%)' },
+  { icon: '🧭', name: 'Geração X', color: 'hsl(38 92% 50%)' },
+  { icon: '🚀', name: 'Millennial', color: 'hsl(77 100% 50%)' },
+  { icon: '⚡', name: 'Geração Z', color: 'hsl(162 60% 48%)' },
+  { icon: '🌐', name: 'Alpha', color: 'hsl(265 80% 73%)' },
 ];
 
 export default function Landing() {
@@ -55,19 +56,19 @@ export default function Landing() {
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <h1 className="font-display text-[2.6rem] sm:text-5xl font-extrabold leading-[1.15] tracking-tight mb-4">
-            Descubra seu <br />
-            <span className="gradient-text">perfil de consumo</span>
+            Qual geração de<br />
+            <span className="gradient-text">consumidor</span>
             <br />
-            online. 🛒
+            é você? 🛒
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm">
-            Responda 10 afirmações sobre seus hábitos de compra e descubra como você se comporta no comércio digital.
+            Responda 10 afirmações sobre seus hábitos de compra e descubra com qual geração — X, Millennial, Z ou Alpha — seu perfil de consumo mais se identifica.
           </p>
         </motion.div>
 
-        {/* Profile preview cards */}
+        {/* Profile preview cards — 4 groups, 2x2 grid */}
         <motion.div
-          className="flex gap-3 mt-8 mb-2"
+          className="grid grid-cols-2 gap-3 mt-8 mb-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -75,7 +76,7 @@ export default function Landing() {
           {profiles.map((p, i) => (
             <motion.div
               key={p.name}
-              className="flex-1 glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
+              className="glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 + i * 0.1 }}
