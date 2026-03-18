@@ -140,9 +140,8 @@ export const groups: Group[] = [
 export const genderOptions = [
   { value: 'masculino', label: 'Masculino' },
   { value: 'feminino', label: 'Feminino' },
-  { value: 'nao-binario', label: 'Não-binário' },
-  { value: 'prefiro-nao-dizer', label: 'Prefiro não dizer' },
   { value: 'outro', label: 'Outro' },
+  { value: 'prefiro-nao-dizer', label: 'Prefiro não dizer' },
 ];
 
 export const likertOptions = [
