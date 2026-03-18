@@ -93,16 +93,25 @@ export type Database = {
           created_at: string
           id: string
           results: Json
+          user_birthdate: string | null
+          user_gender: string | null
+          user_name: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           results?: Json
+          user_birthdate?: string | null
+          user_gender?: string | null
+          user_name?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           results?: Json
+          user_birthdate?: string | null
+          user_gender?: string | null
+          user_name?: string | null
         }
         Relationships: []
       }
