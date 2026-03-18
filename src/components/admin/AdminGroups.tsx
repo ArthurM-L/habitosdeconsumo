@@ -105,7 +105,7 @@ export default function AdminGroups() {
           </div>
           <div>
             <label className="text-xs text-muted-foreground mb-1 block">Cor</label>
-            <input value={newGroup.color} onChange={(e) => setNewGroup((n) => ({ ...n, color: e.target.value }))} className="w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="#6366F1" />
+            <input value={newGroup.color} onChange={(e) => setNewGroup((n) => ({ ...n, color: e.target.value }))} className="w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary" placeholder="#B4FF00" />
           </div>
           <div className="sm:col-span-2">
             <label className="text-xs text-muted-foreground mb-1 block">Descrição</label>
