@@ -284,91 +284,50 @@ function LikertCard({
   color: string;
 }) {
   return (
-    <motion.div
+    <motion.button
       variants={cardItemVariants}
-      style={{ display: 'contents' }}
+      onClick={() => onSelect(opt.value)}
+      disabled={showCheck}
+      whileHover={!showCheck ? { scale: 1.03 } : {}}
+      whileTap={!showCheck ? { scale: 0.93 } : {}}
+      animate={isSelected ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } } : { scale: 1 }}
+      className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
+      style={{
+        padding: '10px 6px',
+        border: '1.5px solid',
+        transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
+        ...(isSelected
+          ? { background: color + '20', borderColor: color, boxShadow: `0 0 0 1px ${color}55, 0 0 18px ${color}35` }
+          : { background: 'hsl(var(--card) / 0.55)', borderColor: 'hsl(var(--border) / 0.55)', backdropFilter: 'blur(14px)' }),
+      }}
     >
-      <motion.button
-        onClick={() => onSelect(opt.value)}
-        disabled={showCheck}
-        whileHover={!showCheck ? { scale: 1.03 } : {}}
-        whileTap={!showCheck ? { scale: 0.93 } : {}}
-        animate={
-          isSelected
-            ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
-            : { scale: 1 }
-        }
-        className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none"
+      <motion.img
+        src={likertImages[opt.value]}
+        alt={opt.label}
+        animate={isSelected ? { scale: 1.15 } : { scale: 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          padding: '10px 6px',
-          border: '1.5px solid',
-          transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
-          ...(isSelected
-            ? {
-                background: color + '20',
-                borderColor: color,
-                boxShadow: `0 0 0 1px ${color}55, 0 0 18px ${color}35`,
-              }
-            : {
-                background: 'hsl(var(--card) / 0.55)',
-                borderColor: 'hsl(var(--border) / 0.55)',
-                backdropFilter: 'blur(14px)',
-              }),
+          width: 44, height: 44, borderRadius: 10, objectFit: 'cover',
+          filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+          transition: 'filter 0.18s',
         }}
-      >
-        {/* Ícone */}
-        <motion.div
-          animate={
-            isSelected
-              ? { scale: 1.15, transition: { type: 'spring', stiffness: 520, damping: 20 } }
-              : { scale: 1, transition: { type: 'spring', stiffness: 400, damping: 28 } }
-          }
-        >
-          <img
-            src={likertImages[opt.value]}
-            alt={opt.label}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 10,
-              objectFit: 'cover',
-              filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-              transition: 'filter 0.18s',
-            }}
-          />
-        </motion.div>
-
-        {/* Label */}
-        <span
-          className="text-[9px] font-semibold text-center leading-tight font-display"
-          style={{
-            color: isSelected ? color : 'hsl(var(--muted-foreground))',
-            transition: 'color 0.18s',
-          }}
-        >
-          {opt.label}
-        </span>
-
-        {/* Check overlay */}
-        <AnimatePresence>
-          {isSelected && showCheck && (
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center rounded-2xl"
-              style={{ background: color + '28' }}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
-            >
-              <motion.div
-                initial={{ scale: 0.2, rotate: -30, opacity: 0 }}
-                animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 16 }}
-              >
-                <CircleCheck size={28} strokeWidth={2} color={color} style={{ filter: `drop-shadow(0 0 8px ${color}99)` }} />
-              </motion.div>
+      />
+      <span className="text-[9px] font-semibold text-center leading-tight font-display"
+        style={{ color: isSelected ? color : 'hsl(var(--muted-foreground))', transition: 'color 0.18s' }}>
+        {opt.label}
+      </span>
+      <AnimatePresence>
+        {isSelected && showCheck && (
+          <motion.div className="absolute inset-0 flex items-center justify-center rounded-2xl"
+            style={{ background: color + '28' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
+            <motion.div initial={{ scale: 0.2, rotate: -30, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 16 }}>
+              <CircleCheck size={28} strokeWidth={2} color={color} style={{ filter: `drop-shadow(0 0 8px ${color}99)` }} />
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.button>
-    </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
   );
 }
