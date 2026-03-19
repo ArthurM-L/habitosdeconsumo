@@ -60,7 +60,7 @@ export default function Landing() {
             Qual geração de<br />
             <span className="gradient-text">consumidor</span>
             <br />
-            é você? 🛒
+            é você?
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm">
             Responda 10 afirmações sobre seus hábitos de compra e descubra com qual geração — X, Millennial, Z ou Alpha — seu perfil de consumo mais se identifica.
