@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, User, Calendar, ChevronDown } from 'lucide-react';
+import { ArrowRight, User, Calendar, ChevronLeft, Users } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { genderOptions } from '@/data/quizData';
 
@@ -9,9 +9,15 @@ type Step = 'name' | 'gender' | 'birthdate';
 const STEPS: Step[] = ['name', 'gender', 'birthdate'];
 
 const slideVariants = {
-  enter: { x: 60, opacity: 0 },
+  enter: { x: 48, opacity: 0 },
   center: { x: 0, opacity: 1 },
-  exit: { x: -60, opacity: 0 },
+  exit: { x: -48, opacity: 0 },
+};
+
+const stepMeta: Record<Step, { icon: React.ElementType; label: string; title: string; number: string }> = {
+  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',          number: '01' },
+  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero',         number: '02' },
+  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',           number: '03' },
 };
 
 export default function Intro() {
@@ -53,7 +59,6 @@ export default function Intro() {
     if (currentStep === 'gender' && !gender) return;
     if (currentStep === 'birthdate') {
       if (!validateBirthdate()) return;
-      // All done — save and go to quiz
       setUserInfo({ name: name.trim(), gender, birthdate });
       setPhase('quiz');
       navigate('/quiz');
@@ -72,41 +77,69 @@ export default function Intro() {
     (currentStep === 'gender' && !!gender) ||
     (currentStep === 'birthdate' && !!birthdate);
 
-  const progress = ((stepIndex + 1) / STEPS.length) * 100;
-
   return (
     <div className="min-h-screen mesh-bg flex flex-col">
       {/* Header */}
-      <div className="shrink-0 px-5 pt-12 pb-4 max-w-lg mx-auto w-full">
+      <div className="shrink-0 px-5 pt-10 pb-4 max-w-lg mx-auto w-full">
         <button
           onClick={handleBack}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 active:opacity-60"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground mb-8 active:opacity-60 hover:text-foreground transition-colors"
         >
-          <ChevronDown className="w-3.5 h-3.5 rotate-90" />
+          <ChevronLeft className="w-3.5 h-3.5" />
           Voltar
         </button>
 
-        {/* Progress dots */}
-        <div className="flex gap-2 mb-2">
-          {STEPS.map((_, i) => (
-            <motion.div
-              key={i}
-              className="h-1.5 flex-1 rounded-full overflow-hidden"
-              style={{ background: 'hsl(var(--muted))' }}
-            >
+        {/* Step indicator strip */}
+        <div className="flex gap-1.5 mb-6">
+          {STEPS.map((s, i) => {
+            const done = i < stepIndex;
+            const active = i === stepIndex;
+            return (
               <motion.div
-                className="h-full rounded-full"
-                animate={{ scaleX: i <= stepIndex ? 1 : 0 }}
-                initial={{ scaleX: 0 }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
-                style={{ transformOrigin: 'left', background: 'var(--gradient-progress)' }}
-              />
-            </motion.div>
-          ))}
+                key={i}
+                className="h-1 flex-1 rounded-full overflow-hidden"
+                style={{ background: 'hsl(var(--muted))' }}
+              >
+                <motion.div
+                  className="h-full rounded-full"
+                  animate={{ scaleX: done || active ? 1 : 0 }}
+                  initial={{ scaleX: 0 }}
+                  transition={{ duration: 0.4, ease: 'easeOut' }}
+                  style={{
+                    transformOrigin: 'left',
+                    background: done
+                      ? 'hsl(var(--primary) / 0.45)'
+                      : 'var(--gradient-progress)',
+                  }}
+                />
+              </motion.div>
+            );
+          })}
         </div>
-        <p className="text-xs text-muted-foreground font-display">
-          Passo {stepIndex + 1} de {STEPS.length}
-        </p>
+
+        {/* Step chip */}
+        <div className="flex items-center gap-2.5">
+          {STEPS.map((s, i) => {
+            const meta = stepMeta[s];
+            const active = i === stepIndex;
+            return (
+              <motion.div
+                key={s}
+                animate={{ opacity: active ? 1 : 0.3, scale: active ? 1 : 0.92 }}
+                transition={{ duration: 0.25 }}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display font-semibold uppercase tracking-wider"
+                style={{
+                  background: active ? 'hsl(var(--primary) / 0.12)' : 'transparent',
+                  border: active ? '1px solid hsl(var(--primary) / 0.35)' : '1px solid transparent',
+                  color: active ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))',
+                }}
+              >
+                <meta.icon className="w-3 h-3" />
+                {meta.label}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Content */}
@@ -118,38 +151,23 @@ export default function Intro() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.28, ease: 'easeInOut' }}
+            transition={{ duration: 0.26, ease: 'easeInOut' }}
           >
             {currentStep === 'name' && (
-              <NameStep
-                value={name}
-                onChange={setName}
-                error={nameError}
-                onEnter={handleNext}
-              />
+              <NameStep value={name} onChange={setName} error={nameError} onEnter={handleNext} />
             )}
             {currentStep === 'gender' && (
               <GenderStep value={gender} onChange={setGender} />
             )}
             {currentStep === 'birthdate' && (
-              <BirthdateStep
-                value={birthdate}
-                onChange={setBirthdate}
-                error={bdError}
-                onEnter={handleNext}
-              />
+              <BirthdateStep value={birthdate} onChange={setBirthdate} error={bdError} onEnter={handleNext} />
             )}
           </motion.div>
         </AnimatePresence>
       </div>
 
       {/* CTA */}
-      <motion.div
-        className="shrink-0 px-5 pb-10 pt-4 max-w-lg mx-auto w-full"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
+      <div className="shrink-0 px-5 pb-10 pt-4 max-w-lg mx-auto w-full">
         <motion.button
           onClick={handleNext}
           disabled={!canProceed}
@@ -164,12 +182,34 @@ export default function Intro() {
           {currentStep === 'birthdate' ? 'Iniciar quiz' : 'Continuar'}
           <ArrowRight className="w-4 h-4" />
         </motion.button>
-      </motion.div>
+      </div>
     </div>
   );
 }
 
-// ── Sub-steps ──
+// ── Sub-steps ────────────────────────────────────────────
+
+function StepHeader({ icon: Icon, number, title }: { icon: React.ElementType; number: string; title: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-8">
+      <div
+        className="relative w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+        style={{ background: 'hsl(var(--primary) / 0.1)', border: '1px solid hsl(var(--primary) / 0.25)', boxShadow: '0 0 20px hsl(var(--primary) / 0.12)' }}
+      >
+        <Icon className="w-6 h-6" style={{ color: 'hsl(var(--primary))' }} />
+        <span
+          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-[9px] font-display font-bold flex items-center justify-center"
+          style={{ background: 'var(--gradient-primary)', color: '#0B1A12' }}
+        >
+          {number}
+        </span>
+      </div>
+      <div>
+        <h2 className="font-display text-2xl font-extrabold text-foreground leading-tight">{title}</h2>
+      </div>
+    </div>
+  );
+}
 
 function NameStep({
   value, onChange, error, onEnter,
@@ -181,36 +221,36 @@ function NameStep({
 }) {
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center">
-          <User className="w-5 h-5 text-background" />
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground font-display uppercase tracking-widest">Pergunta 1</p>
-          <h2 className="font-display text-2xl font-extrabold text-foreground">Qual é o seu nome?</h2>
-        </div>
+      <StepHeader icon={User} number="01" title="Qual é o seu nome?" />
+      <div className="relative">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && onEnter()}
+          placeholder="Seu nome completo"
+          autoFocus
+          maxLength={120}
+          className="w-full rounded-2xl px-5 py-4 font-display text-lg font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all duration-200"
+          style={{
+            background: 'hsl(var(--card) / 0.6)',
+            border: '1.5px solid hsl(var(--border) / 0.5)',
+            backdropFilter: 'blur(12px)',
+          }}
+          onFocus={(e) => (e.target.style.borderColor = 'hsl(var(--primary) / 0.7)')}
+          onBlur={(e) => (e.target.style.borderColor = 'hsl(var(--border) / 0.5)')}
+        />
+        {value.trim().length >= 2 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center"
+            style={{ background: 'hsl(var(--primary) / 0.15)' }}
+          >
+            <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(var(--primary))' }} />
+          </motion.div>
+        )}
       </div>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && onEnter()}
-        placeholder="Seu nome completo"
-        autoFocus
-        maxLength={120}
-        className="w-full rounded-2xl px-5 py-4 font-display text-lg font-semibold text-foreground placeholder:text-muted-foreground/50 focus:outline-none transition-all duration-200"
-        style={{
-          background: 'hsl(var(--card) / 0.6)',
-          border: '1.5px solid hsl(var(--border) / 0.6)',
-          backdropFilter: 'blur(12px)',
-        }}
-        onFocus={(e) =>
-          (e.target.style.borderColor = 'hsl(var(--primary) / 0.8)')
-        }
-        onBlur={(e) =>
-          (e.target.style.borderColor = 'hsl(var(--border) / 0.6)')
-        }
-      />
       {error && (
         <motion.p
           initial={{ opacity: 0, y: -4 }}
@@ -228,15 +268,7 @@ function NameStep({
 function GenderStep({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center">
-          <span className="text-xl">🏳️‍🌈</span>
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground font-display uppercase tracking-widest">Pergunta 2</p>
-          <h2 className="font-display text-2xl font-extrabold text-foreground">Identidade de gênero</h2>
-        </div>
-      </div>
+      <StepHeader icon={Users} number="02" title="Identidade de gênero" />
       <div className="flex flex-col gap-2.5">
         {genderOptions.map((opt) => {
           const selected = value === opt.value;
@@ -244,24 +276,41 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
             <motion.button
               key={opt.value}
               onClick={() => onChange(opt.value)}
-              whileTap={{ scale: 0.97 }}
-              className="w-full text-left px-5 py-4 rounded-2xl font-display font-semibold text-base transition-all duration-200 focus:outline-none"
+              whileTap={{ scale: 0.975 }}
+              className="w-full text-left px-5 py-3.5 rounded-2xl font-display font-semibold text-base transition-all duration-200 focus:outline-none flex items-center gap-3"
               style={
                 selected
                   ? {
-                      background: 'hsl(var(--primary) / 0.15)',
-                      border: '1.5px solid hsl(var(--primary))',
+                      background: 'hsl(var(--primary) / 0.12)',
+                      border: '1.5px solid hsl(var(--primary) / 0.7)',
                       color: 'hsl(var(--primary))',
-                      boxShadow: 'var(--glow-primary)',
+                      boxShadow: '0 0 16px hsl(var(--primary) / 0.15)',
                     }
                   : {
                       background: 'hsl(var(--card) / 0.5)',
-                      border: '1.5px solid hsl(var(--border) / 0.5)',
+                      border: '1.5px solid hsl(var(--border) / 0.4)',
                       color: 'hsl(var(--foreground))',
                       backdropFilter: 'blur(12px)',
                     }
               }
             >
+              {/* Selection dot */}
+              <div
+                className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200"
+                style={{
+                  borderColor: selected ? 'hsl(var(--primary))' : 'hsl(var(--border))',
+                  background: selected ? 'hsl(var(--primary))' : 'transparent',
+                }}
+              >
+                {selected && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ background: '#0B1A12' }}
+                  />
+                )}
+              </div>
               {opt.label}
             </motion.button>
           );
@@ -282,15 +331,7 @@ function BirthdateStep({
   const maxDate = new Date().toISOString().split('T')[0];
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center">
-          <Calendar className="w-5 h-5 text-background" />
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground font-display uppercase tracking-widest">Pergunta 3</p>
-          <h2 className="font-display text-2xl font-extrabold text-foreground">Data de nascimento</h2>
-        </div>
-      </div>
+      <StepHeader icon={Calendar} number="03" title="Data de nascimento" />
       <input
         type="date"
         value={value}
@@ -301,16 +342,12 @@ function BirthdateStep({
         className="w-full rounded-2xl px-5 py-4 font-display text-lg font-semibold text-foreground focus:outline-none transition-all duration-200 appearance-none"
         style={{
           background: 'hsl(var(--card) / 0.6)',
-          border: '1.5px solid hsl(var(--border) / 0.6)',
+          border: '1.5px solid hsl(var(--border) / 0.5)',
           backdropFilter: 'blur(12px)',
           colorScheme: 'dark',
         }}
-        onFocus={(e) =>
-          (e.target.style.borderColor = 'hsl(var(--primary) / 0.8)')
-        }
-        onBlur={(e) =>
-          (e.target.style.borderColor = 'hsl(var(--border) / 0.6)')
-        }
+        onFocus={(e) => (e.target.style.borderColor = 'hsl(var(--primary) / 0.7)')}
+        onBlur={(e) => (e.target.style.borderColor = 'hsl(var(--border) / 0.5)')}
       />
       {error && (
         <motion.p
@@ -322,9 +359,15 @@ function BirthdateStep({
           {error}
         </motion.p>
       )}
-      <p className="text-xs text-muted-foreground mt-3 px-1">
-        Sua data de nascimento não será compartilhada com terceiros.
-      </p>
+      <div
+        className="mt-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl"
+        style={{ background: 'hsl(var(--muted) / 0.5)', border: '1px solid hsl(var(--border) / 0.3)' }}
+      >
+        <Calendar className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
+        <p className="text-[11px] text-muted-foreground leading-relaxed">
+          Sua data de nascimento não será compartilhada com terceiros.
+        </p>
+      </div>
     </div>
   );
 }
