@@ -221,11 +221,16 @@ export default function Quiz() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.28, ease: 'easeInOut' }}
+          transition={slideTransition}
             className="flex flex-col flex-1 gap-4"
           >
             {/* Question card */}
-            <div className="glass-strong rounded-3xl p-5 relative overflow-hidden">
+            <motion.div
+              className="glass-strong rounded-3xl p-5 relative overflow-hidden"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 30, delay: 0.04 }}
+            >
               <div
                 className="absolute -top-6 -right-6 w-36 h-36 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
                 style={{ background: 'hsl(var(--primary))' }}
