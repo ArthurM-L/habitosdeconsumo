@@ -188,8 +188,8 @@ export default function Quiz() {
         </AnimatePresence>
       </header>
 
-      {/* ── Question + Cards — único bloco flex que preenche o restante ── */}
-      <div className="flex-1 flex flex-col px-4 pt-1 pb-3 max-w-lg mx-auto w-full min-h-0">
+      {/* ── Question + Cards ── */}
+      <div className="flex-1 relative min-h-0 px-4 pt-1 pb-3 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentQuestion}
@@ -199,7 +199,7 @@ export default function Quiz() {
             animate="center"
             exit="exit"
             transition={slideTransition}
-            className="flex flex-col flex-1 min-h-0 gap-2.5"
+            style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', gap: 10, padding: '4px 16px 12px' }}
           >
             {/* Pergunta */}
             <motion.div
@@ -220,28 +220,23 @@ export default function Quiz() {
               </div>
             </motion.div>
 
-            {/* Grid Likert — 2 linhas com alturas fixas que se encaixam na tela */}
-            <motion.div
-              className="flex-1 min-h-0 flex flex-col gap-2"
-              variants={cardListVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* Linha 1: 2 colunas */}
-              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0', minHeight: 0, gridTemplateRows: '1fr' }}>
+            {/* Cards Likert — flex rows, cada linha flex-items fill height */}
+            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {/* Linha 1: 2 cards */}
+              <div style={{ flex: 2, minHeight: 0, display: 'flex', gap: 8 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-              {/* Linha 2: 3 colunas */}
-              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0', minHeight: 0, gridTemplateRows: '1fr' }}>
+              {/* Linha 2: 3 cards */}
+              <div style={{ flex: 3, minHeight: 0, display: 'flex', gap: 8 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Hint */}
             <AnimatePresence>
@@ -285,15 +280,21 @@ function LikertCard({
 }) {
   return (
     <motion.button
-      variants={cardItemVariants}
       onClick={() => onSelect(opt.value)}
       disabled={showCheck}
       whileHover={!showCheck ? { scale: 1.03 } : {}}
       whileTap={!showCheck ? { scale: 0.93 } : {}}
       animate={isSelected ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } } : { scale: 1 }}
-      className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
+      className="relative rounded-2xl focus:outline-none overflow-hidden"
       style={{
-        padding: '10px 6px',
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        padding: '8px 4px',
+        minWidth: 0,
         border: '1.5px solid',
         transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
         ...(isSelected
@@ -301,21 +302,45 @@ function LikertCard({
           : { background: 'hsl(var(--card) / 0.55)', borderColor: 'hsl(var(--border) / 0.55)', backdropFilter: 'blur(14px)' }),
       }}
     >
+      {/* Glow de fundo quando selecionado */}
+      {isSelected && (
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${color}18, transparent 70%)`,
+        }} />
+      )}
+
       <motion.img
         src={likertImages[opt.value]}
         alt={opt.label}
-        animate={isSelected ? { scale: 1.15 } : { scale: 1 }}
+        animate={isSelected ? { scale: 1.08 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          width: 44, height: 44, borderRadius: 10, objectFit: 'cover',
-          filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+          flex: 1,
+          width: '80%',
+          minHeight: 0,
+          borderRadius: 8,
+          objectFit: 'contain',
+          position: 'relative', zIndex: 1,
+          filter: isSelected ? `drop-shadow(0 0 8px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
           transition: 'filter 0.18s',
         }}
       />
-      <span className="text-[9px] font-semibold text-center leading-tight font-display"
-        style={{ color: isSelected ? color : 'hsl(var(--muted-foreground))', transition: 'color 0.18s' }}>
+      <span style={{
+        fontSize: 'clamp(8px, 1.4vh, 11px)',
+        fontWeight: 600,
+        textAlign: 'center',
+        lineHeight: 1.2,
+        fontFamily: 'inherit',
+        flexShrink: 0,
+        position: 'relative', zIndex: 1,
+        color: isSelected ? color : 'hsl(var(--muted-foreground))',
+        transition: 'color 0.18s',
+        padding: '0 2px',
+      }}>
         {opt.label}
       </span>
+
       <AnimatePresence>
         {isSelected && showCheck && (
           <motion.div className="absolute inset-0 flex items-center justify-center rounded-2xl"
