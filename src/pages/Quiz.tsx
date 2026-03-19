@@ -14,14 +14,7 @@ import neutroImg from '@/assets/neutro.jpeg';
 import discordoImg from '@/assets/discordo.jpeg';
 import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
 
-// Icon per scale step
-const likertIcons: Record<number, LucideIcon> = {
-  1: ChevronsDown,
-  2: ChevronDown,
-  3: Minus,
-  4: ChevronUp,
-  5: ChevronsUp,
-};
+// Semantic color scale: disagree → red, neutral → yellow, agree → lime
 
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
 const likertColors: Record<number, string> = {
