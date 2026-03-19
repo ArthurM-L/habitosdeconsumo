@@ -245,27 +245,6 @@ function NameStep({ value, onChange, error, onEnter }: { value: string; onChange
   );
 }
 
-// ── Reusable info card ──
-function InfoCard({ icon: Icon, title, description }: { icon: React.ElementType; title: string; description: string }) {
-  return (
-    <div
-      className="flex items-start gap-3 rounded-2xl p-3.5"
-      style={{ background: 'hsl(var(--card) / 0.4)', border: '1px solid hsl(var(--border) / 0.25)' }}
-    >
-      <div
-        className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
-        style={{ background: 'hsl(var(--primary) / 0.1)' }}
-      >
-        <Icon className="w-4 h-4" style={{ color: 'hsl(var(--primary))' }} />
-      </div>
-      <div>
-        <p className="text-xs font-display font-bold text-foreground mb-0.5">{title}</p>
-        <p className="text-[11px] text-muted-foreground leading-relaxed">{description}</p>
-      </div>
-    </div>
-  );
-}
-
 // ── Gender step ──
 function GenderStep({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
