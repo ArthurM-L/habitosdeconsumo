@@ -3,25 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Flame, Zap,
-  ChevronsDown, ChevronDown, Minus, ChevronUp, ChevronsUp,
   CircleCheck, Trophy,
 } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
-import type { LucideIcon } from 'lucide-react';
+
 import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
 import concordoImg from '@/assets/concordo.jpeg';
 import neutroImg from '@/assets/neutro.jpeg';
 import discordoImg from '@/assets/discordo.jpeg';
+import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
 
-// Icon per scale step
-const likertIcons: Record<number, LucideIcon> = {
-  1: ChevronsDown,
-  2: ChevronDown,
-  3: Minus,
-  4: ChevronUp,
-  5: ChevronsUp,
-};
+// Semantic color scale: disagree → red, neutral → yellow, agree → lime
 
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
 const likertColors: Record<number, string> = {
@@ -341,7 +334,6 @@ function LikertCard({
   onSelect: (v: 1 | 2 | 3 | 4 | 5) => void;
   color: string;
 }) {
-  const IconComponent = likertIcons[opt.value];
 
   return (
     // Picks up cardItemVariants from cardListVariants stagger
@@ -439,11 +431,17 @@ function LikertCard({
               }}
             />
           ) : (
-            <IconComponent
-              size={26}
-              strokeWidth={isSelected ? 2.5 : 1.8}
-              color={isSelected ? color : 'hsl(var(--muted-foreground))'}
-              style={{ transition: 'color 0.18s' }}
+            <img
+              src={discordoTotalmenteImg}
+              alt="Discordo totalmente"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
             />
           )}
         </motion.div>
