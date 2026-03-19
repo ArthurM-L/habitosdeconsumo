@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
-import type { LucideIcon } from 'lucide-react';
+
 import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
 import concordoImg from '@/assets/concordo.jpeg';
 import neutroImg from '@/assets/neutro.jpeg';
