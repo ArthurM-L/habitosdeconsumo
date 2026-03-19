@@ -369,9 +369,9 @@ function LikertCard({
             ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
             : { scale: 1 }
         }
-        className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none w-full h-full"
+        className="relative flex flex-col items-center justify-center gap-1 rounded-2xl focus:outline-none w-full h-full"
         style={{
-          padding: '10px 6px',
+          padding: '8px 4px',
           border: '1.5px solid',
           transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
           ...(isSelected
@@ -387,11 +387,12 @@ function LikertCard({
               }),
         }}
       >
-        {/* Icon */}
+        {/* Icon — tamanho relativo à altura disponível via clamp */}
         <motion.div
+          className="flex items-center justify-center"
           animate={
             isSelected
-              ? { scale: 1.18, transition: { type: 'spring', stiffness: 520, damping: 20 } }
+              ? { scale: 1.15, transition: { type: 'spring', stiffness: 520, damping: 20 } }
               : { scale: 1,    transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
@@ -399,8 +400,8 @@ function LikertCard({
             src={likertImages[opt.value]}
             alt={opt.label}
             style={{
-              width: 36,
-              height: 36,
+              width: 'clamp(28px, 7vw, 40px)',
+              height: 'clamp(28px, 7vw, 40px)',
               borderRadius: 8,
               objectFit: 'cover',
               filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
@@ -411,7 +412,7 @@ function LikertCard({
 
         {/* Label */}
         <span
-          className="text-[9px] font-semibold text-center leading-tight font-display"
+          className="text-[9px] font-semibold text-center leading-tight font-display px-0.5"
           style={{
             color: isSelected ? color : 'hsl(var(--muted-foreground))',
             transition: 'color 0.18s',
@@ -437,7 +438,7 @@ function LikertCard({
                 transition={{ type: 'spring', stiffness: 500, damping: 16 }}
               >
                 <CircleCheck
-                  size={32}
+                  size={28}
                   strokeWidth={2}
                   color={color}
                   style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
