@@ -274,8 +274,8 @@ export default function Quiz() {
               initial="hidden"
               animate="visible"
             >
-              {/* Linha 1: 2 cards */}
-              <div className="grid grid-cols-2 gap-2 flex-1 min-h-0">
+              {/* Linha 1: 2 cards — 40% da área */}
+              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0', minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -287,8 +287,8 @@ export default function Quiz() {
                   />
                 ))}
               </div>
-              {/* Linha 2: 3 cards */}
-              <div className="grid grid-cols-3 gap-2 flex-1 min-h-0">
+              {/* Linha 2: 3 cards — 60% da área */}
+              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0', minHeight: 0 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard
                     key={opt.value}
