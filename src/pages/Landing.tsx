@@ -23,15 +23,15 @@ export default function Landing() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col mesh-bg overflow-hidden">
+    <div className="relative h-screen flex flex-col mesh-bg overflow-hidden">
       {/* Decorative background blobs */}
-      <div className="absolute top-0 left-0 w-72 h-72 rounded-full opacity-10 blur-3xl pointer-events-none"
+      <div className="absolute top-0 left-0 w-56 h-56 rounded-full opacity-10 blur-3xl pointer-events-none"
         style={{ background: 'hsl(77 100% 50%)' }} />
-      <div className="absolute bottom-20 right-0 w-64 h-64 rounded-full opacity-8 blur-3xl pointer-events-none"
+      <div className="absolute bottom-20 right-0 w-48 h-48 rounded-full opacity-8 blur-3xl pointer-events-none"
         style={{ background: 'hsl(120 80% 45%)' }} />
 
-      {/* Main content — scrollable area */}
-      <div className="flex-1 flex flex-col justify-center px-5 pt-14 pb-36">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col justify-center px-5 pt-10 pb-28 overflow-hidden">
 
         {/* Top badge row */}
         <motion.div
