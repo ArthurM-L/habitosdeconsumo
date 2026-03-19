@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap, Users, Clock } from 'lucide-react';
+import { ArrowRight, Zap, Clock, Compass, Rocket, BatteryCharging, Globe } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
+import type { LucideIcon } from 'lucide-react';
 
-const profiles = [
-  { icon: '🧭', name: 'Geração X', color: 'hsl(38 92% 50%)' },
-  { icon: '🚀', name: 'Millennial', color: 'hsl(77 100% 50%)' },
-  { icon: '⚡', name: 'Geração Z', color: 'hsl(162 60% 48%)' },
-  { icon: '🌐', name: 'Alpha', color: 'hsl(265 80% 73%)' },
+const profiles: { icon: LucideIcon; name: string; color: string; sub: string }[] = [
+  { icon: Compass,        name: 'Geração X',  color: 'hsl(38 92% 50%)',  sub: '1965–1980' },
+  { icon: Rocket,         name: 'Millennial', color: 'hsl(77 100% 50%)', sub: '1981–1996' },
+  { icon: BatteryCharging,name: 'Geração Z',  color: 'hsl(162 60% 48%)', sub: '1997–2012' },
+  { icon: Globe,          name: 'Alpha',      color: 'hsl(265 80% 73%)', sub: '2013–hoje'  },
 ];
 
 export default function Landing() {
