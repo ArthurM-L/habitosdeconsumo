@@ -225,6 +225,7 @@ export default function Quiz() {
             className="flex flex-col flex-1 gap-4"
           >
             {/* Question card */}
+            {/* Question card */}
             <motion.div
               className="glass-strong rounded-3xl p-5 relative overflow-hidden"
               initial={{ opacity: 0, y: 12 }}
@@ -251,10 +252,16 @@ export default function Quiz() {
                   {question.text}
                 </h2>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Likert options: 2 top + 3 bottom — fills remaining space */}
-            <div className="flex flex-col gap-2.5 flex-1">
+            {/* Likert options: staggered spring entrance */}
+            <motion.div
+              className="flex flex-col gap-2.5 flex-1"
+              variants={cardListVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+            >
               <div className="grid grid-cols-2 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
@@ -281,7 +288,7 @@ export default function Quiz() {
                   />
                 ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* Hint */}
             <AnimatePresence>
