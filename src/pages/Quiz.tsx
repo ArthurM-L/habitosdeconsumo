@@ -227,15 +227,15 @@ export default function Quiz() {
               initial="hidden"
               animate="visible"
             >
-              {/* Linha 1: 2 colunas — proporção menor */}
-              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0', minHeight: 0 }}>
+              {/* Linha 1: 2 colunas */}
+              <div className="grid grid-cols-2 gap-2 h-full" style={{ flex: '2 1 0', minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-              {/* Linha 2: 3 colunas — proporção maior */}
-              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0', minHeight: 0 }}>
+              {/* Linha 2: 3 colunas */}
+              <div className="grid grid-cols-3 gap-2 h-full" style={{ flex: '3 1 0', minHeight: 0 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
