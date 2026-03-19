@@ -8,27 +8,22 @@ import {
 import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
 
-import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
-import concordoImg from '@/assets/concordo.jpeg';
-import neutroImg from '@/assets/neutro.jpeg';
-import discordoImg from '@/assets/discordo.jpeg';
-import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
+import {
+  concordo_totalmente,
+  concordo,
+  neutro,
+  discordo,
+  discordo_totalmente,
+} from '@/assets/inlineImages';
 
-// Preload all Likert images immediately at module level so they're in the
-// browser cache before the quiz renders any card.
+// Inline base64 images — zero network requests, zero flicker
 const likertImages: Record<number, string> = {
-  1: discordoTotalmenteImg,
-  2: discordoImg,
-  3: neutroImg,
-  4: concordoImg,
-  5: concordoTotalmenteImg,
+  1: discordo_totalmente,
+  2: discordo,
+  3: neutro,
+  4: concordo,
+  5: concordo_totalmente,
 };
-(() => {
-  Object.values(likertImages).forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-})();
 
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
 
