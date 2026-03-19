@@ -12,6 +12,7 @@ import type { LucideIcon } from 'lucide-react';
 import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
 import concordoImg from '@/assets/concordo.jpeg';
 import neutroImg from '@/assets/neutro.jpeg';
+import discordoImg from '@/assets/discordo.jpeg';
 
 // Icon per scale step
 const likertIcons: Record<number, LucideIcon> = {
@@ -415,6 +416,19 @@ function LikertCard({
             <img
               src={neutroImg}
               alt="Neutro"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
+            />
+          ) : opt.value === 2 ? (
+            <img
+              src={discordoImg}
+              alt="Discordo"
               style={{
                 width: 30,
                 height: 30,
