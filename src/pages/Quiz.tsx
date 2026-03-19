@@ -1,22 +1,13 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Flame, Zap,
-  CircleCheck, Trophy,
-} from 'lucide-react';
+import { Flame, Zap, CircleCheck, Trophy } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
-
 import {
-  concordo_totalmente,
-  concordo,
-  neutro,
-  discordo,
-  discordo_totalmente,
+  concordo_totalmente, concordo, neutro, discordo, discordo_totalmente,
 } from '@/assets/inlineImages';
 
-// Inline base64 images — zero network requests, zero flicker
 const likertImages: Record<number, string> = {
   1: discordo_totalmente,
   2: discordo,
@@ -25,9 +16,6 @@ const likertImages: Record<number, string> = {
   5: concordo_totalmente,
 };
 
-// Semantic color scale: disagree → red, neutral → yellow, agree → lime
-
-// Semantic color scale: disagree → red, neutral → yellow, agree → lime
 const likertColors: Record<number, string> = {
   1: 'hsl(0 80% 58%)',
   2: 'hsl(22 90% 54%)',
@@ -36,40 +24,19 @@ const likertColors: Record<number, string> = {
   5: 'hsl(77 100% 52%)',
 };
 
-const milestoneMessages: Record<number, { text: string }> = {
-  3: { text: 'Ótimo ritmo — continue assim' },
-  5: { text: 'Metade do caminho — arrasando' },
-  7: { text: 'Quase lá — só mais 3' },
+const milestoneMessages: Record<number, string> = {
+  3: 'Ótimo ritmo — continue assim',
+  5: 'Metade do caminho — arrasando',
+  7: 'Quase lá — só mais 3',
 };
 
-// Question panel — spring physics
 const slideVariants = {
-  enter: (d: number) => ({ x: d > 0 ? 56 : -56, opacity: 0, scale: 0.97 }),
+  enter: (d: number) => ({ x: d > 0 ? 48 : -48, opacity: 0, scale: 0.98 }),
   center: { x: 0, opacity: 1, scale: 1 },
-  exit: (d: number) => ({ x: d > 0 ? -56 : 56, opacity: 0, scale: 0.97 }),
+  exit: (d: number) => ({ x: d > 0 ? -48 : 48, opacity: 0, scale: 0.98 }),
 };
 
-const slideTransition = {
-  type: 'spring' as const,
-  stiffness: 340,
-  damping: 32,
-  mass: 0.9,
-};
-
-// Staggered card container — separate name avoids collision with parent variants
-const cardListVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
-};
-
-// Per-card spring entry
-const cardItemVariants = {
-  hidden:  { opacity: 0, y: 20, scale: 0.92 },
-  visible: {
-    opacity: 1, y: 0, scale: 1,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 26 },
-  },
-};
+const slideTransition = { type: 'spring' as const, stiffness: 360, damping: 34, mass: 0.85 };
 
 export default function Quiz() {
   const navigate = useNavigate();
@@ -112,7 +79,7 @@ export default function Quiz() {
 
       const nextIdx = currentQuestion + 1;
       if (milestoneMessages[nextIdx]) {
-        setMilestoneMsg(milestoneMessages[nextIdx].text);
+        setMilestoneMsg(milestoneMessages[nextIdx]);
         setShowMilestone(true);
         setTimeout(() => setShowMilestone(false), 2200);
       }
@@ -139,19 +106,19 @@ export default function Quiz() {
 
   const question = questions[currentQuestion];
   const filledCount = currentQuestion + (showCheck ? 1 : 0);
-
   if (!question) return null;
 
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
 
-      {/* ── HUD — compacto ── */}
+      {/* ── HUD ── */}
       <header className="shrink-0 px-4 pt-4 pb-2 max-w-lg mx-auto w-full">
-        <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground font-display">Pergunta</span>
             <span className="font-display font-extrabold text-sm text-foreground tabular-nums">
-              {currentQuestion + 1}<span className="text-muted-foreground/40 font-semibold">/{questions.length}</span>
+              {currentQuestion + 1}
+              <span className="text-muted-foreground/40 font-semibold">/{questions.length}</span>
             </span>
           </div>
           <div className="relative flex items-center gap-1.5 glass rounded-full px-3 py-1">
@@ -159,28 +126,44 @@ export default function Quiz() {
             <span className="text-xs font-extrabold font-display text-foreground tabular-nums">{xp}</span>
             <AnimatePresence>
               {showXpPop && (
-                <motion.span key={xpPopKey} className="absolute -top-5 right-1 text-[10px] font-bold pointer-events-none font-display"
+                <motion.span
+                  key={xpPopKey}
+                  className="absolute -top-5 right-1 text-[10px] font-bold pointer-events-none font-display"
                   style={{ color: 'hsl(var(--warning))' }}
-                  initial={{ y: 0, opacity: 1, scale: 0.9 }} animate={{ y: -14, opacity: 0, scale: 1.3 }} exit={{ opacity: 0 }} transition={{ duration: 0.65 }}>
+                  initial={{ y: 0, opacity: 1, scale: 0.9 }}
+                  animate={{ y: -14, opacity: 0, scale: 1.3 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.65 }}
+                >
                   +10
                 </motion.span>
               )}
             </AnimatePresence>
           </div>
         </div>
-        <div className="flex gap-[3px]">
+
+        {/* Progress bar */}
+        <div className="flex gap-[3px] mb-1">
           {questions.map((_, i) => (
             <div key={i} className="h-1 flex-1 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
-              <motion.div className="h-full rounded-full" initial={{ scaleX: 0 }} animate={{ scaleX: i < filledCount ? 1 : 0 }}
+              <motion.div
+                className="h-full rounded-full"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: i < filledCount ? 1 : 0 }}
                 transition={{ duration: 0.35, ease: 'easeOut', delay: i < currentQuestion ? 0 : 0.08 }}
-                style={{ transformOrigin: 'left', background: 'var(--gradient-progress)' }} />
+                style={{ transformOrigin: 'left', background: 'var(--gradient-progress)' }}
+              />
             </div>
           ))}
         </div>
+
         <AnimatePresence>
           {streak >= 3 && (
-            <motion.div className="flex items-center gap-1 mt-1 text-[10px] font-semibold font-display" style={{ color: 'hsl(var(--warning))' }}
-              initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}>
+            <motion.div
+              className="flex items-center gap-1 text-[10px] font-semibold font-display"
+              style={{ color: 'hsl(var(--warning))' }}
+              initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+            >
               <Flame className="w-3 h-3 fill-warning" />
               <span>{streak} em sequência</span>
             </motion.div>
@@ -189,7 +172,7 @@ export default function Quiz() {
       </header>
 
       {/* ── Question + Cards ── */}
-      <div className="flex-1 relative min-h-0 px-4 pt-1 pb-3 max-w-lg mx-auto w-full">
+      <div className="flex-1 min-h-0 relative px-4 pb-3 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentQuestion}
@@ -199,41 +182,67 @@ export default function Quiz() {
             animate="center"
             exit="exit"
             transition={slideTransition}
-            style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', gap: 10, padding: '4px 16px 12px' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+              padding: '4px 16px 12px',
+            }}
           >
             {/* Pergunta */}
-            <motion.div
-              className="glass-strong rounded-2xl px-4 py-3 relative overflow-hidden shrink-0"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.04 }}
+            <div
+              className="shrink-0 glass-strong rounded-2xl px-4 py-3 relative overflow-hidden"
+              style={{ border: '1px solid hsl(var(--border) / 0.3)' }}
             >
-              <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full opacity-[0.08] blur-3xl pointer-events-none" style={{ background: 'hsl(var(--primary))' }} />
+              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-[0.07] blur-3xl pointer-events-none" style={{ background: 'hsl(var(--primary))' }} />
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg gradient-bg flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px hsl(77 100% 50% / 0.4)' }}>
-                    <span className="text-[10px] font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>{currentQuestion + 1}</span>
+                  <div
+                    className="w-6 h-6 rounded-lg gradient-bg flex items-center justify-center shrink-0"
+                    style={{ boxShadow: '0 0 8px hsl(77 100% 50% / 0.35)' }}
+                  >
+                    <span className="text-[10px] font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
+                      {currentQuestion + 1}
+                    </span>
                   </div>
                   <div className="h-px flex-1 bg-border/30" />
                 </div>
-                <h2 className="font-display text-[1rem] font-bold leading-snug text-foreground">{question.text}</h2>
+                <h2 className="font-display text-[0.95rem] font-bold leading-snug text-foreground">
+                  {question.text}
+                </h2>
               </div>
-            </motion.div>
+            </div>
 
-            {/* Cards Likert — flex rows, cada linha flex-items fill height */}
+            {/* Cards Likert — grade uniforme 2+3 */}
             <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {/* Linha 1: 2 cards */}
-              <div style={{ flex: 2, minHeight: 0, display: 'flex', gap: 8 }}>
+
+              {/* Linha 1 — 2 cards */}
+              <div style={{ flex: '0 0 42%', display: 'flex', gap: 8 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
-                  <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
-                    showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
+                  <LikertCard
+                    key={opt.value}
+                    opt={opt}
+                    isSelected={selectedValue === opt.value}
+                    showCheck={showCheck}
+                    onSelect={handleSelect}
+                    color={likertColors[opt.value]}
+                  />
                 ))}
               </div>
-              {/* Linha 2: 3 cards */}
-              <div style={{ flex: 3, minHeight: 0, display: 'flex', gap: 8 }}>
+
+              {/* Linha 2 — 3 cards */}
+              <div style={{ flex: '0 0 calc(58% - 8px)', display: 'flex', gap: 8 }}>
                 {likertOptions.slice(2).map((opt) => (
-                  <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
-                    showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
+                  <LikertCard
+                    key={opt.value}
+                    opt={opt}
+                    isSelected={selectedValue === opt.value}
+                    showCheck={showCheck}
+                    onSelect={handleSelect}
+                    color={likertColors[opt.value]}
+                  />
                 ))}
               </div>
             </div>
@@ -241,8 +250,10 @@ export default function Quiz() {
             {/* Hint */}
             <AnimatePresence>
               {!selectedValue && (
-                <motion.p className="text-center text-[10px] text-muted-foreground/40 font-display tracking-wide shrink-0"
-                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.5 }}>
+                <motion.p
+                  className="shrink-0 text-center text-[10px] text-muted-foreground/40 font-display tracking-wide"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ delay: 0.5 }}
+                >
                   Toque em uma opção para responder
                 </motion.p>
               )}
@@ -254,10 +265,17 @@ export default function Quiz() {
       {/* ── Milestone toast ── */}
       <AnimatePresence>
         {showMilestone && (
-          <motion.div className="fixed inset-x-0 bottom-6 flex justify-center z-50 pointer-events-none px-5"
-            initial={{ opacity: 0, y: 16, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }} transition={{ type: 'spring', stiffness: 380, damping: 26 }}>
-            <div className="glass-strong rounded-2xl px-5 py-2.5 flex items-center gap-2.5 border border-primary/25" style={{ boxShadow: 'var(--glow-primary)' }}>
+          <motion.div
+            className="fixed inset-x-0 bottom-6 flex justify-center z-50 pointer-events-none px-5"
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+          >
+            <div
+              className="glass-strong rounded-2xl px-5 py-2.5 flex items-center gap-2.5"
+              style={{ border: '1px solid hsl(var(--primary) / 0.25)', boxShadow: 'var(--glow-primary)' }}
+            >
               <Trophy className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--warning))' }} />
               <p className="font-display font-bold text-sm text-foreground">{milestoneMsg}</p>
             </div>
@@ -279,80 +297,102 @@ function LikertCard({
   color: string;
 }) {
   return (
-    <motion.button
+    <button
       onClick={() => onSelect(opt.value)}
       disabled={showCheck}
-      whileHover={!showCheck ? { scale: 1.03 } : {}}
-      whileTap={!showCheck ? { scale: 0.93 } : {}}
-      animate={isSelected ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } } : { scale: 1 }}
       className="relative rounded-2xl focus:outline-none overflow-hidden"
       style={{
         flex: 1,
+        minWidth: 0,
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 6,
-        padding: '8px 4px',
-        minWidth: 0,
+        padding: '10px 6px 8px',
         border: '1.5px solid',
-        transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
+        transition: 'background 0.18s, border-color 0.18s, box-shadow 0.22s, transform 0.12s',
+        transform: isSelected ? 'scale(1.03)' : 'scale(1)',
         ...(isSelected
-          ? { background: color + '20', borderColor: color, boxShadow: `0 0 0 1px ${color}55, 0 0 18px ${color}35` }
-          : { background: 'hsl(var(--card) / 0.55)', borderColor: 'hsl(var(--border) / 0.55)', backdropFilter: 'blur(14px)' }),
+          ? {
+              background: color + '22',
+              borderColor: color,
+              boxShadow: `0 0 0 1px ${color}44, 0 0 16px ${color}30`,
+            }
+          : {
+              background: 'hsl(var(--card) / 0.55)',
+              borderColor: 'hsl(var(--border) / 0.5)',
+              backdropFilter: 'blur(14px)',
+            }),
       }}
     >
-      {/* Glow de fundo quando selecionado */}
+      {/* Glow radial quando selecionado */}
       {isSelected && (
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${color}18, transparent 70%)`,
-        }} />
+        <div
+          style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: `radial-gradient(ellipse 90% 70% at 50% 40%, ${color}15, transparent 70%)`,
+          }}
+        />
       )}
 
-      <motion.img
-        src={likertImages[opt.value]}
-        alt={opt.label}
-        animate={isSelected ? { scale: 1.08 } : { scale: 1 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+      {/* Imagem */}
+      <div style={{ flex: 1, minHeight: 0, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
+        <img
+          src={likertImages[opt.value]}
+          alt={opt.label}
+          style={{
+            maxWidth: '76%',
+            maxHeight: '100%',
+            width: 'auto',
+            height: 'auto',
+            borderRadius: 8,
+            objectFit: 'contain',
+            filter: isSelected ? `drop-shadow(0 0 8px ${color}88)` : 'grayscale(0.25) brightness(0.82)',
+            transition: 'filter 0.18s, transform 0.18s',
+            transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+          }}
+        />
+      </div>
+
+      {/* Label */}
+      <span
         style={{
-          flex: 1,
-          width: '80%',
-          minHeight: 0,
-          borderRadius: 8,
-          objectFit: 'contain',
+          fontSize: 'clamp(9px, 1.5vw, 11px)',
+          fontWeight: 600,
+          textAlign: 'center',
+          lineHeight: 1.2,
+          fontFamily: 'inherit',
+          flexShrink: 0,
           position: 'relative', zIndex: 1,
-          filter: isSelected ? `drop-shadow(0 0 8px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-          transition: 'filter 0.18s',
+          color: isSelected ? color : 'hsl(var(--muted-foreground))',
+          transition: 'color 0.18s',
+          padding: '0 2px',
+          maxWidth: '100%',
         }}
-      />
-      <span style={{
-        fontSize: 'clamp(8px, 1.4vh, 11px)',
-        fontWeight: 600,
-        textAlign: 'center',
-        lineHeight: 1.2,
-        fontFamily: 'inherit',
-        flexShrink: 0,
-        position: 'relative', zIndex: 1,
-        color: isSelected ? color : 'hsl(var(--muted-foreground))',
-        transition: 'color 0.18s',
-        padding: '0 2px',
-      }}>
+      >
         {opt.label}
       </span>
 
+      {/* Check overlay */}
       <AnimatePresence>
         {isSelected && showCheck && (
-          <motion.div className="absolute inset-0 flex items-center justify-center rounded-2xl"
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center rounded-2xl"
             style={{ background: color + '28' }}
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
-            <motion.div initial={{ scale: 0.2, rotate: -30, opacity: 0 }} animate={{ scale: 1, rotate: 0, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 16 }}>
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}
+          >
+            <motion.div
+              initial={{ scale: 0.2, rotate: -30, opacity: 0 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 16 }}
+            >
               <CircleCheck size={28} strokeWidth={2} color={color} style={{ filter: `drop-shadow(0 0 8px ${color}99)` }} />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.button>
+    </button>
   );
 }

@@ -9,13 +9,13 @@ type Step = 'name' | 'gender' | 'birthdate';
 const STEPS: Step[] = ['name', 'gender', 'birthdate'];
 
 const slideVariants = {
-  enter: { x: 48, opacity: 0 },
+  enter: { x: 40, opacity: 0 },
   center: { x: 0, opacity: 1 },
-  exit: { x: -48, opacity: 0 },
+  exit: { x: -40, opacity: 0 },
 };
 
 const stepMeta: Record<Step, { icon: React.ElementType; label: string; title: string; number: string }> = {
-  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',  number: '01' },
+  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',   number: '01' },
   gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '02' },
   birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '03' },
 };
@@ -74,8 +74,8 @@ export default function Intro() {
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
 
-      {/* ── Header ── */}
-      <div className="shrink-0 px-4 pt-5 pb-2 max-w-lg mx-auto w-full">
+      {/* ── Header compacto ── */}
+      <div className="shrink-0 px-4 pt-4 pb-2 max-w-lg mx-auto w-full">
         <button
           onClick={handleBack}
           className="flex items-center gap-1 text-[11px] text-muted-foreground mb-3 active:opacity-60 hover:text-foreground transition-colors"
@@ -87,7 +87,7 @@ export default function Intro() {
         {/* Progress strip */}
         <div className="flex gap-1.5 mb-2">
           {STEPS.map((_, i) => (
-            <motion.div key={i} className="h-1 flex-1 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
+            <div key={i} className="h-1 flex-1 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
               <motion.div
                 className="h-full rounded-full"
                 animate={{ scaleX: i <= stepIndex ? 1 : 0 }}
@@ -98,7 +98,7 @@ export default function Intro() {
                   background: i < stepIndex ? 'hsl(var(--primary) / 0.45)' : 'var(--gradient-progress)',
                 }}
               />
-            </motion.div>
+            </div>
           ))}
         </div>
 
@@ -127,8 +127,8 @@ export default function Intro() {
         </div>
       </div>
 
-      {/* ── Content ── */}
-      <div className="flex-1 px-4 pb-2 max-w-lg mx-auto w-full overflow-hidden">
+      {/* ── Content — flex-1 fills remaining space ── */}
+      <div className="flex-1 min-h-0 px-4 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -136,7 +136,7 @@ export default function Intro() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="h-full flex flex-col"
           >
             {currentStep === 'name' && (
@@ -152,8 +152,8 @@ export default function Intro() {
         </AnimatePresence>
       </div>
 
-      {/* ── CTA ── */}
-      <div className="shrink-0 px-4 pb-6 pt-2 max-w-lg mx-auto w-full">
+      {/* ── CTA fixo no fundo ── */}
+      <div className="shrink-0 px-4 pb-8 pt-3 max-w-lg mx-auto w-full">
         <motion.button
           onClick={handleNext}
           disabled={!canProceed}
@@ -176,9 +176,9 @@ export default function Intro() {
 // ── Shared step header ──
 function StepHeader({ icon: Icon, number, title }: { icon: React.ElementType; number: string; title: string }) {
   return (
-    <div className="flex items-center gap-3 mb-5 pt-3">
+    <div className="flex items-center gap-3 mb-4 pt-3">
       <div
-        className="relative w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+        className="relative w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
         style={{ background: 'hsl(var(--primary) / 0.1)', border: '1px solid hsl(var(--primary) / 0.25)' }}
       >
         <Icon className="w-5 h-5" style={{ color: 'hsl(var(--primary))' }} />
@@ -200,7 +200,7 @@ function NameStep({ value, onChange, error, onEnter }: { value: string; onChange
     <div className="flex flex-col h-full">
       <StepHeader icon={User} number="01" title="Qual é o seu nome?" />
 
-      <div className="relative mb-3">
+      <div className="relative mb-2">
         <input
           type="text"
           value={value}
@@ -230,13 +230,13 @@ function NameStep({ value, onChange, error, onEnter }: { value: string; onChange
         )}
       </div>
       {error && (
-        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mb-3 px-1" style={{ color: 'hsl(var(--destructive))' }}>
+        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mb-2 px-1" style={{ color: 'hsl(var(--destructive))' }}>
           {error}
         </motion.p>
       )}
 
-      {/* Info cards que preenchem o espaço restante */}
-      <div className="flex flex-col gap-2.5 flex-1 justify-end pb-2">
+      {/* Info cards distribuídos uniformemente no espaço restante */}
+      <div className="flex flex-col gap-2 flex-1 justify-evenly py-2">
         <InfoCard icon={Sparkles} title="Perfil personalizado" description="Seu nome aparece nos resultados para tornar a experiência única." />
         <InfoCard icon={Shield} title="Privacidade garantida" description="Seus dados não são compartilhados. Tudo fica apenas no seu dispositivo." />
         <InfoCard icon={Clock} title="Menos de 5 minutos" description="O quiz tem 10 perguntas rápidas sobre seus hábitos e comportamentos." />
@@ -250,7 +250,9 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex flex-col h-full">
       <StepHeader icon={Users} number="02" title="Identidade de gênero" />
-      <div className="flex flex-col gap-2.5 mb-4">
+
+      {/* Opções distribuídas uniformemente */}
+      <div className="flex flex-col gap-3 flex-1 justify-evenly py-2">
         {genderOptions.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -258,7 +260,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
               key={opt.value}
               onClick={() => onChange(opt.value)}
               whileTap={{ scale: 0.975 }}
-              className="w-full text-left px-4 py-3.5 rounded-2xl font-display font-semibold text-sm transition-all duration-200 focus:outline-none flex items-center gap-3"
+              className="w-full text-left px-4 py-4 rounded-2xl font-display font-semibold text-sm transition-all duration-200 focus:outline-none flex items-center gap-3"
               style={
                 selected
                   ? { background: 'hsl(var(--primary) / 0.12)', border: '1.5px solid hsl(var(--primary) / 0.7)', color: 'hsl(var(--primary))', boxShadow: '0 0 14px hsl(var(--primary) / 0.15)' }
@@ -266,22 +268,23 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
               }
             >
               <div
-                className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200"
+                className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200"
                 style={{ borderColor: selected ? 'hsl(var(--primary))' : 'hsl(var(--border))', background: selected ? 'hsl(var(--primary))' : 'transparent' }}
               >
                 {selected && (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-1.5 h-1.5 rounded-full" style={{ background: '#0B1A12' }} />
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-2 h-2 rounded-full" style={{ background: '#0B1A12' }} />
                 )}
               </div>
               {opt.label}
             </motion.button>
           );
         })}
-      </div>
-      {/* Info cards que preenchem o espaço */}
-      <div className="flex flex-col gap-2.5 flex-1 justify-end pb-2">
-        <InfoCard icon={Shield} title="Informação opcional" description="Sua identidade de gênero nos ajuda a personalizar a análise do seu perfil geracional." />
-        <InfoCard icon={Sparkles} title="Análise inclusiva" description="Levamos em conta todas as identidades de gênero para uma análise mais precisa e representativa." />
+
+        {/* Info cards compactos no fundo */}
+        <div className="flex flex-col gap-2 mt-2">
+          <InfoCard icon={Shield} title="Informação opcional" description="Sua identidade de gênero nos ajuda a personalizar a análise do seu perfil geracional." />
+          <InfoCard icon={Sparkles} title="Análise inclusiva" description="Levamos em conta todas as identidades de gênero para uma análise mais representativa." />
+        </div>
       </div>
     </div>
   );
@@ -291,7 +294,6 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
 function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onChange: (v: string) => void; error: string; onEnter: () => void }) {
   const maxDate = new Date().toISOString().split('T')[0];
 
-  // Geração calculada em tempo real
   const getGeneration = (dateStr: string): { name: string; years: string } | null => {
     if (!dateStr) return null;
     const year = new Date(dateStr).getFullYear();
@@ -317,13 +319,13 @@ function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onC
         onKeyDown={(e) => e.key === 'Enter' && onEnter()}
         max={maxDate}
         autoFocus
-        className="w-full rounded-2xl px-4 py-4 font-display text-base font-semibold text-foreground focus:outline-none transition-all duration-200 appearance-none mb-3"
+        className="w-full rounded-2xl px-4 py-4 font-display text-base font-semibold text-foreground focus:outline-none transition-all duration-200 appearance-none mb-2"
         style={{ background: 'hsl(var(--card) / 0.6)', border: '1.5px solid hsl(var(--border) / 0.5)', backdropFilter: 'blur(12px)', colorScheme: 'dark' }}
         onFocus={(e) => (e.target.style.borderColor = 'hsl(var(--primary) / 0.7)')}
         onBlur={(e) => (e.target.style.borderColor = 'hsl(var(--border) / 0.5)')}
       />
       {error && (
-        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mb-3 px-1" style={{ color: 'hsl(var(--destructive))' }}>
+        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mb-2 px-1" style={{ color: 'hsl(var(--destructive))' }}>
           {error}
         </motion.p>
       )}
@@ -339,10 +341,7 @@ function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onC
             className="rounded-2xl p-4 mb-3 flex items-center gap-3"
             style={{ background: 'hsl(var(--primary) / 0.1)', border: '1px solid hsl(var(--primary) / 0.35)' }}
           >
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-              style={{ background: 'var(--gradient-primary)' }}
-            >
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--gradient-primary)' }}>
               <Sparkles className="w-4 h-4" style={{ color: '#0B1A12' }} />
             </div>
             <div>
@@ -354,8 +353,7 @@ function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onC
         )}
       </AnimatePresence>
 
-      {/* Info cards preenchem o espaço */}
-      <div className="flex flex-col gap-2.5 flex-1 justify-end pb-2">
+      <div className="flex flex-col gap-2 flex-1 justify-evenly py-1">
         <InfoCard icon={Shield} title="Campo opcional" description="Você pode pular este campo — ele apenas ajuda a contextualizar seu perfil geracional." />
         <InfoCard icon={Clock} title="Análise geracional" description="Comparamos seus hábitos com padrões de consumo de cada geração no Brasil." />
       </div>
