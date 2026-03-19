@@ -313,14 +313,14 @@ function LikertCard({
       <motion.img
         src={likertImages[opt.value]}
         alt={opt.label}
-        animate={isSelected ? { scale: 1.12 } : { scale: 1 }}
+        animate={isSelected ? { scale: 1.06 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          width: 'clamp(36px, 9vh, 72px)',
-          height: 'clamp(36px, 9vh, 72px)',
-          borderRadius: 10,
+          flex: 1,
+          width: '100%',
+          minHeight: 0,
+          borderRadius: 8,
           objectFit: 'cover',
-          flexShrink: 0,
           position: 'relative', zIndex: 1,
           filter: isSelected ? `drop-shadow(0 0 8px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
           transition: 'filter 0.18s',
