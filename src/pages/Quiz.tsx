@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Flame, Zap,
-  ChevronsDown, ChevronDown, Minus, ChevronUp, ChevronsUp,
   CircleCheck, Trophy,
 } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
