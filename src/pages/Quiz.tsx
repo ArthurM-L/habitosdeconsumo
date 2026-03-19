@@ -425,6 +425,19 @@ function LikertCard({
                 transition: 'filter 0.18s',
               }}
             />
+          ) : opt.value === 2 ? (
+            <img
+              src={discordoImg}
+              alt="Discordo"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
+            />
           ) : (
             <IconComponent
               size={26}
