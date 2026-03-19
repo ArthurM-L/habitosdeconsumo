@@ -440,11 +440,17 @@ function LikertCard({
               }}
             />
           ) : (
-            <IconComponent
-              size={26}
-              strokeWidth={isSelected ? 2.5 : 1.8}
-              color={isSelected ? color : 'hsl(var(--muted-foreground))'}
-              style={{ transition: 'color 0.18s' }}
+            <img
+              src={discordoTotalmenteImg}
+              alt="Discordo totalmente"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
             />
           )}
         </motion.div>
