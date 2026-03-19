@@ -52,7 +52,8 @@ export default function Intro() {
     if (currentStep === 'name' && !validateName()) return;
     if (currentStep === 'gender' && !gender) return;
     if (currentStep === 'birthdate') {
-      if (!validateBirthdate()) return;
+      // birthdate is optional — validate only if provided
+      if (birthdate && !validateBirthdate()) return;
       setUserInfo({ name: name.trim(), gender, birthdate });
       setPhase('quiz');
       navigate('/quiz');
@@ -69,7 +70,7 @@ export default function Intro() {
   const canProceed =
     (currentStep === 'name' && name.trim().length >= 2) ||
     (currentStep === 'gender' && !!gender) ||
-    (currentStep === 'birthdate' && !!birthdate);
+    currentStep === 'birthdate'; // always enabled — date is optional
 
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
