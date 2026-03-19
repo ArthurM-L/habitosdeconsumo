@@ -112,9 +112,9 @@ export default function Landing() {
           transition={{ delay: 0.65 }}
         >
           <div className="flex -space-x-1.5">
-            {['hsl(77 100% 50%)', 'hsl(38 92% 50%)', 'hsl(162 60% 48%)'].map((color, i) => (
-              <div key={i} className="w-6 h-6 rounded-full glass-strong flex items-center justify-center border border-border/60">
-                <Zap size={10} style={{ color }} strokeWidth={2} />
+            {[avatar1, avatar2, avatar3].map((src, i) => (
+              <div key={i} className="w-6 h-6 rounded-full border border-border/60 overflow-hidden shrink-0">
+                <img src={src} alt="" className="w-full h-full object-cover" />
               </div>
             ))}
           </div>
