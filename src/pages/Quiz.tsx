@@ -13,6 +13,7 @@ import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
 import concordoImg from '@/assets/concordo.jpeg';
 import neutroImg from '@/assets/neutro.jpeg';
 import discordoImg from '@/assets/discordo.jpeg';
+import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
 
 // Icon per scale step
 const likertIcons: Record<number, LucideIcon> = {
