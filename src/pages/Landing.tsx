@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Zap, Clock, Compass, Rocket, BatteryCharging, Globe } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import type { LucideIcon } from 'lucide-react';
+import avatar1 from '@/assets/avatar1.jpeg';
+import avatar2 from '@/assets/avatar2.jpeg';
+import avatar3 from '@/assets/avatar3.jpeg';
 
 const profiles: { icon: LucideIcon; name: string; color: string; sub: string }[] = [
   { icon: Compass,         name: 'Geração X',  color: 'hsl(38 92% 50%)',  sub: '1965–1980' },
