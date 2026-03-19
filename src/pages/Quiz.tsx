@@ -135,10 +135,10 @@ export default function Quiz() {
   if (!question) return null;
 
   return (
-    <div className="min-h-screen mesh-bg flex flex-col overflow-hidden">
+    <div className="h-screen mesh-bg flex flex-col overflow-hidden">
 
       {/* ── HUD ── */}
-      <header className="shrink-0 px-5 pt-safe-top pt-10 pb-3 max-w-lg mx-auto w-full">
+      <header className="shrink-0 px-4 pt-8 pb-2 max-w-lg mx-auto w-full">
 
         {/* Top row: label + counter + XP */}
         <div className="flex items-center justify-between mb-3">
