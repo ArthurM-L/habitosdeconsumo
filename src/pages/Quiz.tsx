@@ -14,6 +14,22 @@ import neutroImg from '@/assets/neutro.jpeg';
 import discordoImg from '@/assets/discordo.jpeg';
 import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
 
+// Preload all Likert images immediately at module level so they're in the
+// browser cache before the quiz renders any card.
+const likertImages: Record<number, string> = {
+  1: discordoTotalmenteImg,
+  2: discordoImg,
+  3: neutroImg,
+  4: concordoImg,
+  5: concordoTotalmenteImg,
+};
+(() => {
+  Object.values(likertImages).forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+})();
+
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
 
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
