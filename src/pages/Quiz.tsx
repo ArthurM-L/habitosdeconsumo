@@ -14,6 +14,22 @@ import neutroImg from '@/assets/neutro.jpeg';
 import discordoImg from '@/assets/discordo.jpeg';
 import discordoTotalmenteImg from '@/assets/discordo-totalmente.jpeg';
 
+// Preload all Likert images immediately at module level so they're in the
+// browser cache before the quiz renders any card.
+const likertImages: Record<number, string> = {
+  1: discordoTotalmenteImg,
+  2: discordoImg,
+  3: neutroImg,
+  4: concordoImg,
+  5: concordoTotalmenteImg,
+};
+(() => {
+  Object.values(likertImages).forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+})();
+
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
 
 // Semantic color scale: disagree → red, neutral → yellow, agree → lime
@@ -378,72 +394,18 @@ function LikertCard({
               : { scale: 1,   transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
-          {opt.value === 5 ? (
-            <img
-              src={concordoTotalmenteImg}
-              alt="Concordo totalmente"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                objectFit: 'cover',
-                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-                transition: 'filter 0.18s',
-              }}
-            />
-          ) : opt.value === 4 ? (
-            <img
-              src={concordoImg}
-              alt="Concordo"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                objectFit: 'cover',
-                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-                transition: 'filter 0.18s',
-              }}
-            />
-          ) : opt.value === 3 ? (
-            <img
-              src={neutroImg}
-              alt="Neutro"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                objectFit: 'cover',
-                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-                transition: 'filter 0.18s',
-              }}
-            />
-          ) : opt.value === 2 ? (
-            <img
-              src={discordoImg}
-              alt="Discordo"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                objectFit: 'cover',
-                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-                transition: 'filter 0.18s',
-              }}
-            />
-          ) : (
-            <img
-              src={discordoTotalmenteImg}
-              alt="Discordo totalmente"
-              style={{
-                width: 30,
-                height: 30,
-                borderRadius: 8,
-                objectFit: 'cover',
-                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
-                transition: 'filter 0.18s',
-              }}
-            />
-          )}
+          <img
+            src={likertImages[opt.value]}
+            alt={opt.label}
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 8,
+              objectFit: 'cover',
+              filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+              transition: 'filter 0.18s',
+            }}
+          />
         </motion.div>
 
         {/* Label */}
