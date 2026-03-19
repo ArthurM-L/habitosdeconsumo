@@ -10,6 +10,7 @@ import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
 import type { LucideIcon } from 'lucide-react';
 import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
+import concordoImg from '@/assets/concordo.jpeg';
 
 // Icon per scale step
 const likertIcons: Record<number, LucideIcon> = {
@@ -387,6 +388,19 @@ function LikertCard({
             <img
               src={concordoTotalmenteImg}
               alt="Concordo totalmente"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
+            />
+          ) : opt.value === 4 ? (
+            <img
+              src={concordoImg}
+              alt="Concordo"
               style={{
                 width: 30,
                 height: 30,
