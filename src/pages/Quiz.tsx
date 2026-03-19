@@ -188,8 +188,8 @@ export default function Quiz() {
         </AnimatePresence>
       </header>
 
-      {/* ── Question + Cards — único bloco flex que preenche o restante ── */}
-      <div className="flex-1 flex flex-col px-4 pt-1 pb-3 max-w-lg mx-auto w-full min-h-0">
+      {/* ── Question + Cards ── */}
+      <div className="flex-1 relative min-h-0 px-4 pt-1 pb-3 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentQuestion}
@@ -199,7 +199,7 @@ export default function Quiz() {
             animate="center"
             exit="exit"
             transition={slideTransition}
-            className="flex flex-col flex-1 min-h-0 gap-2.5"
+            style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', gap: 10, padding: '4px 16px 12px' }}
           >
             {/* Pergunta */}
             <motion.div
@@ -220,28 +220,23 @@ export default function Quiz() {
               </div>
             </motion.div>
 
-            {/* Grid Likert — 2 linhas com alturas fixas que se encaixam na tela */}
-            <motion.div
-              className="flex-1 min-h-0 flex flex-col gap-2"
-              variants={cardListVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {/* Linha 1: 2 colunas */}
-              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0', minHeight: 0, gridTemplateRows: '1fr' }}>
+            {/* Cards Likert — flex rows, cada linha flex-items fill height */}
+            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {/* Linha 1: 2 cards */}
+              <div style={{ flex: 2, minHeight: 0, display: 'flex', gap: 8 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-              {/* Linha 2: 3 colunas */}
-              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0', minHeight: 0, gridTemplateRows: '1fr' }}>
+              {/* Linha 2: 3 cards */}
+              <div style={{ flex: 3, minHeight: 0, display: 'flex', gap: 8 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Hint */}
             <AnimatePresence>
