@@ -34,7 +34,7 @@ const milestoneMessages: Record<number, { text: string }> = {
   7: { text: 'Quase lá — só mais 3' },
 };
 
-// Question slide — spring physics for the whole panel
+// Question panel — spring physics
 const slideVariants = {
   enter: (d: number) => ({ x: d > 0 ? 56 : -56, opacity: 0, scale: 0.97 }),
   center: { x: 0, opacity: 1, scale: 1 },
@@ -48,13 +48,13 @@ const slideTransition = {
   mass: 0.9,
 };
 
-// Staggered card container — uses "hidden/visible" to avoid collision with parent
+// Staggered card container — separate name avoids collision with parent variants
 const cardListVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
 };
 
-// Per-card spring
+// Per-card spring entry
 const cardItemVariants = {
   hidden:  { opacity: 0, y: 20, scale: 0.92 },
   visible: {
@@ -193,7 +193,7 @@ export default function Quiz() {
           ))}
         </div>
 
-        {/* Streak badge — icon only, no emoji */}
+        {/* Streak badge */}
         <AnimatePresence>
           {streak >= 3 && (
             <motion.div
@@ -223,15 +223,36 @@ export default function Quiz() {
             transition={slideTransition}
             className="flex flex-col flex-1 gap-4"
           >
-            {/* Question card */}
+            {/* Question card — springs in slightly after the slide */}
             <motion.div
               className="glass-strong rounded-3xl p-5 relative overflow-hidden"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.05 }}
             >
-...
-            {/* Likert options: staggered spring entrance */}
+              <div
+                className="absolute -top-6 -right-6 w-36 h-36 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
+                style={{ background: 'hsl(var(--primary))' }}
+              />
+              <div className="relative z-10">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div
+                    className="w-8 h-8 rounded-xl gradient-bg flex items-center justify-center shrink-0"
+                    style={{ boxShadow: '0 0 12px hsl(77 100% 50% / 0.4)' }}
+                  >
+                    <span className="text-xs font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
+                      {currentQuestion + 1}
+                    </span>
+                  </div>
+                  <div className="h-px flex-1 bg-border/30" />
+                </div>
+                <h2 className="font-display text-[1.1rem] sm:text-xl font-bold leading-snug text-foreground">
+                  {question.text}
+                </h2>
+              </div>
+            </motion.div>
+
+            {/* Likert options — staggered spring entrance, isolated variant namespace */}
             <motion.div
               className="flex flex-col gap-2.5 flex-1"
               variants={cardListVariants}
@@ -247,7 +268,6 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
-                    stretch
                   />
                 ))}
               </div>
@@ -260,7 +280,6 @@ export default function Quiz() {
                     showCheck={showCheck}
                     onSelect={handleSelect}
                     color={likertColors[opt.value]}
-                    stretch
                   />
                 ))}
               </div>
@@ -284,22 +303,23 @@ export default function Quiz() {
         </AnimatePresence>
       </div>
 
-      {/* ── Milestone toast — icon instead of emoji ── */}
+      {/* ── Milestone toast ── */}
       <AnimatePresence>
         {showMilestone && (
           <motion.div
             className="fixed inset-x-0 bottom-8 flex justify-center z-50 pointer-events-none px-5"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 26 }}
           >
-            <motion.div
+            <div
               className="glass-strong rounded-2xl px-5 py-3 flex items-center gap-2.5 border border-primary/25"
               style={{ boxShadow: 'var(--glow-primary)' }}
             >
               <Trophy className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--warning))' }} />
               <p className="font-display font-bold text-sm text-foreground">{milestoneMsg}</p>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -309,33 +329,31 @@ export default function Quiz() {
 
 // ── LikertCard ──
 function LikertCard({
-  opt, isSelected, showCheck, onSelect, color, stretch,
+  opt, isSelected, showCheck, onSelect, color,
 }: {
   opt: { value: 1 | 2 | 3 | 4 | 5; emoji: string; label: string };
   isSelected: boolean;
   showCheck: boolean;
   onSelect: (v: 1 | 2 | 3 | 4 | 5) => void;
   color: string;
-  stretch?: boolean;
 }) {
   const IconComponent = likertIcons[opt.value];
 
   return (
-    // Outer wrapper picks up the stagger from cardListVariants
+    // Picks up cardItemVariants from cardListVariants stagger
     <motion.div
       variants={cardItemVariants}
-      className={stretch ? 'w-full h-full' : ''}
+      className="w-full h-full"
       style={{ minHeight: '80px' }}
     >
       <motion.button
         onClick={() => onSelect(opt.value)}
         disabled={showCheck}
         whileHover={!showCheck ? { y: -3, scale: 1.035 } : {}}
-        whileTap={!showCheck ? { scale: 0.94 } : {}}
-        // Spring-physics border glow on selection
+        whileTap={!showCheck ? { scale: 0.93 } : {}}
         animate={
           isSelected
-            ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 20 } }
+            ? { scale: [1, 1.07, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
             : { scale: 1 }
         }
         className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
@@ -347,7 +365,7 @@ function LikertCard({
             ? {
                 background: color + '20',
                 borderColor: color,
-                boxShadow: `0 0 0 1px ${color}60, 0 0 22px ${color}38`,
+                boxShadow: `0 0 0 1px ${color}55, 0 0 22px ${color}35`,
               }
             : {
                 background: 'hsl(var(--card) / 0.55)',
@@ -356,12 +374,12 @@ function LikertCard({
               }),
         }}
       >
-        {/* Lucide icon — spring scale on select */}
+        {/* Icon — spring scale on select */}
         <motion.div
           animate={
             isSelected
-              ? { scale: 1.18, rotate: 0, transition: { type: 'spring', stiffness: 520, damping: 22 } }
-              : { scale: 1, rotate: 0, transition: { type: 'spring', stiffness: 400, damping: 28 } }
+              ? { scale: 1.2, transition: { type: 'spring', stiffness: 520, damping: 20 } }
+              : { scale: 1,   transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
           <IconComponent
@@ -383,7 +401,7 @@ function LikertCard({
           {opt.label}
         </span>
 
-        {/* Check flash overlay with spring pop */}
+        {/* Check flash overlay — spring pop */}
         <AnimatePresence>
           {isSelected && showCheck && (
             <motion.div
