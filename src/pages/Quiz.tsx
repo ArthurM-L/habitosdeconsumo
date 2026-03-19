@@ -9,6 +9,7 @@ import {
 import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
 import type { LucideIcon } from 'lucide-react';
+import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
 
 // Icon per scale step
 const likertIcons: Record<number, LucideIcon> = {
@@ -382,12 +383,27 @@ function LikertCard({
               : { scale: 1,   transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
-          <IconComponent
-            size={26}
-            strokeWidth={isSelected ? 2.5 : 1.8}
-            color={isSelected ? color : 'hsl(var(--muted-foreground))'}
-            style={{ transition: 'color 0.18s' }}
-          />
+          {opt.value === 5 ? (
+            <img
+              src={concordoTotalmenteImg}
+              alt="Concordo totalmente"
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                objectFit: 'cover',
+                filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+                transition: 'filter 0.18s',
+              }}
+            />
+          ) : (
+            <IconComponent
+              size={26}
+              strokeWidth={isSelected ? 2.5 : 1.8}
+              color={isSelected ? color : 'hsl(var(--muted-foreground))'}
+              style={{ transition: 'color 0.18s' }}
+            />
+          )}
         </motion.div>
 
         {/* Label */}
