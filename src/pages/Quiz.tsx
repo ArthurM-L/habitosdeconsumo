@@ -211,7 +211,7 @@ export default function Quiz() {
       </header>
 
       {/* ── Question + Options ── */}
-      <div className="flex-1 flex flex-col px-4 pb-6 max-w-lg mx-auto w-full min-h-0">
+      <div className="flex-1 flex flex-col px-4 pb-4 max-w-lg mx-auto w-full min-h-0">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentQuestion}
