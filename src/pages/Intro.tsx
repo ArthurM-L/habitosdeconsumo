@@ -250,7 +250,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex flex-col h-full">
       <StepHeader icon={Users} number="02" title="Identidade de gênero" />
-      <div className="flex flex-col gap-3 flex-1">
+      <div className="flex flex-col gap-2.5">
         {genderOptions.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -258,7 +258,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
               key={opt.value}
               onClick={() => onChange(opt.value)}
               whileTap={{ scale: 0.975 }}
-              className="w-full text-left px-4 rounded-2xl font-display font-semibold text-sm transition-all duration-200 focus:outline-none flex items-center gap-3 flex-1"
+              className="w-full text-left px-4 py-3.5 rounded-2xl font-display font-semibold text-sm transition-all duration-200 focus:outline-none flex items-center gap-3"
               style={
                 selected
                   ? { background: 'hsl(var(--primary) / 0.12)', border: '1.5px solid hsl(var(--primary) / 0.7)', color: 'hsl(var(--primary))', boxShadow: '0 0 14px hsl(var(--primary) / 0.15)' }
