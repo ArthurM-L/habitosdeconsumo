@@ -220,46 +220,23 @@ export default function Quiz() {
             initial="enter"
             animate="center"
             exit="exit"
-          transition={slideTransition}
+            transition={slideTransition}
             className="flex flex-col flex-1 gap-4"
           >
             {/* Question card */}
-            {/* Question card */}
             <motion.div
               className="glass-strong rounded-3xl p-5 relative overflow-hidden"
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 380, damping: 30, delay: 0.04 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.05 }}
             >
-              <div
-                className="absolute -top-6 -right-6 w-36 h-36 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
-                style={{ background: 'hsl(var(--primary))' }}
-              />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div
-                    className="w-8 h-8 rounded-xl gradient-bg flex items-center justify-center shrink-0"
-                    style={{ boxShadow: '0 0 12px hsl(77 100% 50% / 0.4)' }}
-                  >
-                    <span className="text-xs font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
-                      {currentQuestion + 1}
-                    </span>
-                  </div>
-                  <div className="h-px flex-1 bg-border/30" />
-                </div>
-                <h2 className="font-display text-[1.1rem] sm:text-xl font-bold leading-snug text-foreground">
-                  {question.text}
-                </h2>
-              </div>
-            </motion.div>
-
+...
             {/* Likert options: staggered spring entrance */}
             <motion.div
               className="flex flex-col gap-2.5 flex-1"
               variants={cardListVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
+              initial="hidden"
+              animate="visible"
             >
               <div className="grid grid-cols-2 gap-2.5 flex-1" style={{ minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
