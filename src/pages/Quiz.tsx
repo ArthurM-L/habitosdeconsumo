@@ -220,23 +220,22 @@ export default function Quiz() {
               </div>
             </motion.div>
 
-            {/* Grid Likert — linha 1 (2 cards) + linha 2 (3 cards) via CSS grid rows */}
+            {/* Grid Likert — 2 linhas com alturas fixas que se encaixam na tela */}
             <motion.div
-              className="flex-1 min-h-0 grid gap-2"
-              style={{ gridTemplateRows: '2fr 3fr' }}
+              className="flex-1 min-h-0 flex flex-col gap-2"
               variants={cardListVariants}
               initial="hidden"
               animate="visible"
             >
-              {/* Linha 1: 2 colunas */}
-              <div className="grid grid-cols-2 gap-2 min-h-0">
+              {/* Linha 1: 2 colunas — proporção menor */}
+              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0', minHeight: 0 }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
                 ))}
               </div>
-              {/* Linha 2: 3 colunas */}
-              <div className="grid grid-cols-3 gap-2 min-h-0">
+              {/* Linha 2: 3 colunas — proporção maior */}
+              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0', minHeight: 0 }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard key={opt.value} opt={opt} isSelected={selectedValue === opt.value}
                     showCheck={showCheck} onSelect={handleSelect} color={likertColors[opt.value]} />
