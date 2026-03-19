@@ -145,11 +145,10 @@ export default function Quiz() {
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
 
-      {/* ── HUD ── */}
-      <header className="shrink-0 px-4 pt-6 pb-1 max-w-lg mx-auto w-full">
-
-        {/* Top row: label + counter + XP */}
-        <div className="flex items-center justify-between mb-2">
+      {/* ── HUD — compacto ── */}
+      <header className="shrink-0 px-4 pt-4 pb-2 max-w-lg mx-auto w-full">
+        {/* Top row */}
+        <div className="flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground font-display">
               Pergunta
@@ -159,7 +158,6 @@ export default function Quiz() {
               <span className="text-muted-foreground/40 font-semibold">/{questions.length}</span>
             </span>
           </div>
-
           {/* XP pill */}
           <div className="relative flex items-center gap-1.5 glass rounded-full px-3 py-1">
             <Zap className="w-3 h-3 fill-warning text-warning" />
@@ -182,14 +180,10 @@ export default function Quiz() {
           </div>
         </div>
 
-        {/* Segmented progress bar */}
+        {/* Progress bar */}
         <div className="flex gap-[3px]">
           {questions.map((_, i) => (
-            <div
-              key={i}
-              className="h-1 flex-1 rounded-full overflow-hidden"
-              style={{ background: 'hsl(var(--muted))' }}
-            >
+            <div key={i} className="h-1 flex-1 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
               <motion.div
                 className="h-full rounded-full"
                 initial={{ scaleX: 0 }}
@@ -205,7 +199,7 @@ export default function Quiz() {
         <AnimatePresence>
           {streak >= 3 && (
             <motion.div
-              className="flex items-center gap-1 mt-1.5 text-[10px] font-semibold font-display"
+              className="flex items-center gap-1 mt-1 text-[10px] font-semibold font-display"
               style={{ color: 'hsl(var(--warning))' }}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
@@ -218,57 +212,70 @@ export default function Quiz() {
         </AnimatePresence>
       </header>
 
-      {/* ── Question + Options ── */}
-      <div className="flex-1 flex flex-col px-4 pb-3 max-w-lg mx-auto w-full min-h-0 gap-3">
+      {/* ── Question card — altura fixa ── */}
+      <div className="shrink-0 px-4 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
-            key={currentQuestion}
+            key={`q-${currentQuestion}`}
             custom={direction}
             variants={slideVariants}
             initial="enter"
             animate="center"
             exit="exit"
             transition={slideTransition}
-            className="flex flex-col flex-1 gap-3 min-h-0"
           >
-            {/* Question card */}
             <motion.div
-              className="glass-strong rounded-2xl px-4 py-3 relative overflow-hidden shrink-0"
-              initial={{ opacity: 0, y: 14 }}
+              className="glass-strong rounded-2xl px-4 py-3 relative overflow-hidden"
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.05 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.04 }}
             >
               <div
                 className="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
                 style={{ background: 'hsl(var(--primary))' }}
               />
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-1.5">
                   <div
-                    className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center shrink-0"
-                    style={{ boxShadow: '0 0 10px hsl(77 100% 50% / 0.4)' }}
+                    className="w-6 h-6 rounded-lg gradient-bg flex items-center justify-center shrink-0"
+                    style={{ boxShadow: '0 0 8px hsl(77 100% 50% / 0.4)' }}
                   >
-                    <span className="text-[11px] font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
+                    <span className="text-[10px] font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
                       {currentQuestion + 1}
                     </span>
                   </div>
                   <div className="h-px flex-1 bg-border/30" />
                 </div>
-                <h2 className="font-display text-[0.95rem] font-bold leading-snug text-foreground">
+                <h2 className="font-display text-[1rem] font-bold leading-snug text-foreground">
                   {question.text}
                 </h2>
               </div>
             </motion.div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
-            {/* Likert options — single 5-column row on mobile */}
+      {/* ── Likert grid — ocupa o restante ── */}
+      <div className="flex-1 flex flex-col px-4 pt-2.5 pb-3 max-w-lg mx-auto w-full min-h-0 gap-2">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={`opts-${currentQuestion}`}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={slideTransition}
+            className="flex flex-col flex-1 min-h-0 gap-2"
+          >
             <motion.div
-              className="flex flex-col gap-2 flex-1 min-h-0"
+              className="flex flex-col flex-1 min-h-0 gap-2"
               variants={cardListVariants}
               initial="hidden"
               animate="visible"
             >
-              {/* Row 1: 2 cards */}
-              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0' }}>
+              {/* Linha 1: 2 cards */}
+              <div className="grid grid-cols-2 gap-2 flex-1 min-h-0">
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -280,8 +287,8 @@ export default function Quiz() {
                   />
                 ))}
               </div>
-              {/* Row 2: 3 cards */}
-              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0' }}>
+              {/* Linha 2: 3 cards */}
+              <div className="grid grid-cols-3 gap-2 flex-1 min-h-0">
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard
                     key={opt.value}
