@@ -15,9 +15,9 @@ const slideVariants = {
 };
 
 const stepMeta: Record<Step, { icon: React.ElementType; label: string; title: string; number: string }> = {
-  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',          number: '01' },
-  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero',         number: '02' },
-  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',           number: '03' },
+  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',  number: '01' },
+  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '02' },
+  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '03' },
 };
 
 export default function Intro() {
@@ -34,12 +34,8 @@ export default function Intro() {
   const currentStep = STEPS[stepIndex];
 
   const validateName = () => {
-    if (!name.trim() || name.trim().length < 2) {
-      setNameError('Por favor, insira seu nome completo.');
-      return false;
-    }
-    setNameError('');
-    return true;
+    if (!name.trim() || name.trim().length < 2) { setNameError('Por favor, insira seu nome completo.'); return false; }
+    setNameError(''); return true;
   };
 
   const validateBirthdate = () => {
@@ -48,10 +44,8 @@ export default function Intro() {
     const now = new Date();
     if (isNaN(parsed.getTime())) { setBdError('Data inválida.'); return false; }
     if (parsed > now) { setBdError('A data não pode ser no futuro.'); return false; }
-    const age = now.getFullYear() - parsed.getFullYear();
-    if (age > 120) { setBdError('Por favor, insira uma data válida.'); return false; }
-    setBdError('');
-    return true;
+    if (now.getFullYear() - parsed.getFullYear() > 120) { setBdError('Por favor, insira uma data válida.'); return false; }
+    setBdError(''); return true;
   };
 
   const handleNext = () => {
@@ -78,47 +72,37 @@ export default function Intro() {
     (currentStep === 'birthdate' && !!birthdate);
 
   return (
-    <div className="min-h-screen mesh-bg flex flex-col">
+    <div className="h-screen mesh-bg flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="shrink-0 px-5 pt-10 pb-4 max-w-lg mx-auto w-full">
+      <div className="shrink-0 px-5 pt-8 pb-2 max-w-lg mx-auto w-full">
         <button
           onClick={handleBack}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground mb-8 active:opacity-60 hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4 active:opacity-60 hover:text-foreground transition-colors"
         >
           <ChevronLeft className="w-3.5 h-3.5" />
           Voltar
         </button>
 
-        {/* Step indicator strip */}
-        <div className="flex gap-1.5 mb-6">
-          {STEPS.map((s, i) => {
-            const done = i < stepIndex;
-            const active = i === stepIndex;
-            return (
+        {/* Progress strip */}
+        <div className="flex gap-1.5 mb-3">
+          {STEPS.map((_, i) => (
+            <motion.div key={i} className="h-1 flex-1 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
               <motion.div
-                key={i}
-                className="h-1 flex-1 rounded-full overflow-hidden"
-                style={{ background: 'hsl(var(--muted))' }}
-              >
-                <motion.div
-                  className="h-full rounded-full"
-                  animate={{ scaleX: done || active ? 1 : 0 }}
-                  initial={{ scaleX: 0 }}
-                  transition={{ duration: 0.4, ease: 'easeOut' }}
-                  style={{
-                    transformOrigin: 'left',
-                    background: done
-                      ? 'hsl(var(--primary) / 0.45)'
-                      : 'var(--gradient-progress)',
-                  }}
-                />
-              </motion.div>
-            );
-          })}
+                className="h-full rounded-full"
+                animate={{ scaleX: i <= stepIndex ? 1 : 0 }}
+                initial={{ scaleX: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                style={{
+                  transformOrigin: 'left',
+                  background: i < stepIndex ? 'hsl(var(--primary) / 0.45)' : 'var(--gradient-progress)',
+                }}
+              />
+            </motion.div>
+          ))}
         </div>
 
-        {/* Step chip */}
-        <div className="flex items-center gap-2.5">
+        {/* Step chips */}
+        <div className="flex items-center gap-2">
           {STEPS.map((s, i) => {
             const meta = stepMeta[s];
             const active = i === stepIndex;
@@ -126,8 +110,8 @@ export default function Intro() {
               <motion.div
                 key={s}
                 animate={{ opacity: active ? 1 : 0.3, scale: active ? 1 : 0.92 }}
-                transition={{ duration: 0.25 }}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-display font-semibold uppercase tracking-wider"
+                transition={{ duration: 0.22 }}
+                className="flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-display font-semibold uppercase tracking-wider"
                 style={{
                   background: active ? 'hsl(var(--primary) / 0.12)' : 'transparent',
                   border: active ? '1px solid hsl(var(--primary) / 0.35)' : '1px solid transparent',
@@ -143,7 +127,7 @@ export default function Intro() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col justify-center px-5 py-4 max-w-lg mx-auto w-full">
+      <div className="flex-1 flex flex-col justify-center px-5 py-2 max-w-lg mx-auto w-full min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentStep}
@@ -151,7 +135,7 @@ export default function Intro() {
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.26, ease: 'easeInOut' }}
+            transition={{ duration: 0.24, ease: 'easeInOut' }}
           >
             {currentStep === 'name' && (
               <NameStep value={name} onChange={setName} error={nameError} onEnter={handleNext} />
@@ -167,12 +151,12 @@ export default function Intro() {
       </div>
 
       {/* CTA */}
-      <div className="shrink-0 px-5 pb-10 pt-4 max-w-lg mx-auto w-full">
+      <div className="shrink-0 px-5 pb-8 pt-3 max-w-lg mx-auto w-full">
         <motion.button
           onClick={handleNext}
           disabled={!canProceed}
           whileTap={canProceed ? { scale: 0.97 } : {}}
-          className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-display font-bold text-base transition-all duration-200 focus:outline-none"
+          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-display font-bold text-base transition-all duration-200 focus:outline-none"
           style={
             canProceed
               ? { background: 'var(--gradient-primary)', color: '#0B1A12', boxShadow: 'var(--glow-primary)' }
@@ -187,38 +171,29 @@ export default function Intro() {
   );
 }
 
-// ── Sub-steps ────────────────────────────────────────────
+// ── Sub-steps ──
 
 function StepHeader({ icon: Icon, number, title }: { icon: React.ElementType; number: string; title: string }) {
   return (
-    <div className="flex items-center gap-4 mb-8">
+    <div className="flex items-center gap-3 mb-5">
       <div
-        className="relative w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
-        style={{ background: 'hsl(var(--primary) / 0.1)', border: '1px solid hsl(var(--primary) / 0.25)', boxShadow: '0 0 20px hsl(var(--primary) / 0.12)' }}
+        className="relative w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+        style={{ background: 'hsl(var(--primary) / 0.1)', border: '1px solid hsl(var(--primary) / 0.25)' }}
       >
-        <Icon className="w-6 h-6" style={{ color: 'hsl(var(--primary))' }} />
+        <Icon className="w-5 h-5" style={{ color: 'hsl(var(--primary))' }} />
         <span
-          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full text-[9px] font-display font-bold flex items-center justify-center"
+          className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full text-[9px] font-display font-bold flex items-center justify-center"
           style={{ background: 'var(--gradient-primary)', color: '#0B1A12' }}
         >
           {number}
         </span>
       </div>
-      <div>
-        <h2 className="font-display text-2xl font-extrabold text-foreground leading-tight">{title}</h2>
-      </div>
+      <h2 className="font-display text-xl font-extrabold text-foreground leading-tight">{title}</h2>
     </div>
   );
 }
 
-function NameStep({
-  value, onChange, error, onEnter,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  error: string;
-  onEnter: () => void;
-}) {
+function NameStep({ value, onChange, error, onEnter }: { value: string; onChange: (v: string) => void; error: string; onEnter: () => void }) {
   return (
     <div>
       <StepHeader icon={User} number="01" title="Qual é o seu nome?" />
@@ -231,7 +206,7 @@ function NameStep({
           placeholder="Seu nome completo"
           autoFocus
           maxLength={120}
-          className="w-full rounded-2xl px-5 py-4 font-display text-lg font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all duration-200"
+          className="w-full rounded-2xl px-4 py-3.5 font-display text-base font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all duration-200"
           style={{
             background: 'hsl(var(--card) / 0.6)',
             border: '1.5px solid hsl(var(--border) / 0.5)',
@@ -244,20 +219,15 @@ function NameStep({
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center"
+            className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full flex items-center justify-center"
             style={{ background: 'hsl(var(--primary) / 0.15)' }}
           >
-            <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(var(--primary))' }} />
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(var(--primary))' }} />
           </motion.div>
         )}
       </div>
       {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xs mt-2 px-1"
-          style={{ color: 'hsl(var(--destructive))' }}
-        >
+        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mt-1.5 px-1" style={{ color: 'hsl(var(--destructive))' }}>
           {error}
         </motion.p>
       )}
@@ -269,7 +239,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div>
       <StepHeader icon={Users} number="02" title="Identidade de gênero" />
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2">
         {genderOptions.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -277,38 +247,19 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
               key={opt.value}
               onClick={() => onChange(opt.value)}
               whileTap={{ scale: 0.975 }}
-              className="w-full text-left px-5 py-3.5 rounded-2xl font-display font-semibold text-base transition-all duration-200 focus:outline-none flex items-center gap-3"
+              className="w-full text-left px-4 py-3 rounded-xl font-display font-semibold text-sm transition-all duration-200 focus:outline-none flex items-center gap-3"
               style={
                 selected
-                  ? {
-                      background: 'hsl(var(--primary) / 0.12)',
-                      border: '1.5px solid hsl(var(--primary) / 0.7)',
-                      color: 'hsl(var(--primary))',
-                      boxShadow: '0 0 16px hsl(var(--primary) / 0.15)',
-                    }
-                  : {
-                      background: 'hsl(var(--card) / 0.5)',
-                      border: '1.5px solid hsl(var(--border) / 0.4)',
-                      color: 'hsl(var(--foreground))',
-                      backdropFilter: 'blur(12px)',
-                    }
+                  ? { background: 'hsl(var(--primary) / 0.12)', border: '1.5px solid hsl(var(--primary) / 0.7)', color: 'hsl(var(--primary))', boxShadow: '0 0 14px hsl(var(--primary) / 0.15)' }
+                  : { background: 'hsl(var(--card) / 0.5)', border: '1.5px solid hsl(var(--border) / 0.4)', color: 'hsl(var(--foreground))', backdropFilter: 'blur(12px)' }
               }
             >
-              {/* Selection dot */}
               <div
-                className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200"
-                style={{
-                  borderColor: selected ? 'hsl(var(--primary))' : 'hsl(var(--border))',
-                  background: selected ? 'hsl(var(--primary))' : 'transparent',
-                }}
+                className="w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200"
+                style={{ borderColor: selected ? 'hsl(var(--primary))' : 'hsl(var(--border))', background: selected ? 'hsl(var(--primary))' : 'transparent' }}
               >
                 {selected && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{ background: '#0B1A12' }}
-                  />
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-1 h-1 rounded-full" style={{ background: '#0B1A12' }} />
                 )}
               </div>
               {opt.label}
@@ -320,14 +271,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
   );
 }
 
-function BirthdateStep({
-  value, onChange, error, onEnter,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  error: string;
-  onEnter: () => void;
-}) {
+function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onChange: (v: string) => void; error: string; onEnter: () => void }) {
   const maxDate = new Date().toISOString().split('T')[0];
   return (
     <div>
@@ -339,34 +283,19 @@ function BirthdateStep({
         onKeyDown={(e) => e.key === 'Enter' && onEnter()}
         max={maxDate}
         autoFocus
-        className="w-full rounded-2xl px-5 py-4 font-display text-lg font-semibold text-foreground focus:outline-none transition-all duration-200 appearance-none"
-        style={{
-          background: 'hsl(var(--card) / 0.6)',
-          border: '1.5px solid hsl(var(--border) / 0.5)',
-          backdropFilter: 'blur(12px)',
-          colorScheme: 'dark',
-        }}
+        className="w-full rounded-2xl px-4 py-3.5 font-display text-base font-semibold text-foreground focus:outline-none transition-all duration-200 appearance-none"
+        style={{ background: 'hsl(var(--card) / 0.6)', border: '1.5px solid hsl(var(--border) / 0.5)', backdropFilter: 'blur(12px)', colorScheme: 'dark' }}
         onFocus={(e) => (e.target.style.borderColor = 'hsl(var(--primary) / 0.7)')}
         onBlur={(e) => (e.target.style.borderColor = 'hsl(var(--border) / 0.5)')}
       />
       {error && (
-        <motion.p
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-xs mt-2 px-1"
-          style={{ color: 'hsl(var(--destructive))' }}
-        >
+        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mt-1.5 px-1" style={{ color: 'hsl(var(--destructive))' }}>
           {error}
         </motion.p>
       )}
-      <div
-        className="mt-4 flex items-start gap-2.5 px-3.5 py-3 rounded-xl"
-        style={{ background: 'hsl(var(--muted) / 0.5)', border: '1px solid hsl(var(--border) / 0.3)' }}
-      >
-        <Calendar className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
-          Sua data de nascimento não será compartilhada com terceiros.
-        </p>
+      <div className="mt-3 flex items-start gap-2 px-3 py-2.5 rounded-xl" style={{ background: 'hsl(var(--muted) / 0.5)', border: '1px solid hsl(var(--border) / 0.3)' }}>
+        <Calendar className="w-3 h-3 mt-0.5 shrink-0" style={{ color: 'hsl(var(--muted-foreground))' }} />
+        <p className="text-[11px] text-muted-foreground leading-relaxed">Sua data de nascimento não será compartilhada com terceiros.</p>
       </div>
     </div>
   );
