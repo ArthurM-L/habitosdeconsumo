@@ -7,6 +7,103 @@ import { useQuizStore } from '@/store/quizStore';
 import { groups } from '@/data/quizData';
 import { supabase } from '@/integrations/supabase/client';
 
+// ── Confetti canvas ──
+function ConfettiCanvas({ color }: { color: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Parse the hex color and derive palette
+    const palette = [color, '#B4FF00', '#ffffff', '#FAFF00', '#00FFB3', '#FF6BFF'];
+
+    type Particle = {
+      x: number; y: number; vx: number; vy: number;
+      size: number; color: string; rotation: number;
+      rotSpeed: number; shape: 'rect' | 'circle' | 'line';
+      opacity: number;
+    };
+
+    const particles: Particle[] = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * 160,
+      vx: (Math.random() - 0.5) * 3.5,
+      vy: 2.5 + Math.random() * 4,
+      size: 5 + Math.random() * 8,
+      color: palette[Math.floor(Math.random() * palette.length)],
+      rotation: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.18,
+      shape: (['rect', 'circle', 'line'] as const)[Math.floor(Math.random() * 3)],
+      opacity: 0.85 + Math.random() * 0.15,
+    }));
+
+    let raf: number;
+    let startTime: number | null = null;
+    const duration = 3200;
+
+    const draw = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotSpeed;
+        p.vy += 0.06; // gravity
+        p.opacity = Math.max(0, p.opacity - (progress > 0.6 ? 0.012 : 0));
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color;
+        ctx.strokeStyle = p.color;
+
+        if (p.shape === 'rect') {
+          ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+        } else if (p.shape === 'circle') {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(-p.size / 2, 0);
+          ctx.lineTo(p.size / 2, 0);
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      if (progress < 1) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [color]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-50"
+      style={{ width: '100%', height: '100%' }}
+    />
+  );
+}
+
 function useCountUp(target: number, duration = 1000) {
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -53,12 +150,24 @@ export default function Results() {
   const navigate = useNavigate();
   const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
   const [copied, setCopied] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const savedRef = useRef(false);
 
   useEffect(() => {
     if (phase === 'landing') { navigate('/'); return; }
     if (phase === 'quiz') { navigate('/quiz'); return; }
   }, [phase, navigate]);
+
+  // Dispara confete ao montar a tela de resultados
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3500);
+    }, 400);
+    return () => clearTimeout(t);
+  }, []);
+
+
 
   useEffect(() => {
     if (!results.length || savedRef.current) return;
@@ -116,6 +225,9 @@ export default function Results() {
 
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
+      {/* Confetti */}
+      {showConfetti && <ConfettiCanvas color={primaryGroup.color} />}
+
       <div className="flex-1 overflow-y-auto px-4 pt-6 pb-24 max-w-md mx-auto w-full">
 
         {/* Greeting */}
