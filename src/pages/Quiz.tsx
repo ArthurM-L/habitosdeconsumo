@@ -287,21 +287,21 @@ function LikertCard({
   return (
     <motion.div
       variants={cardItemVariants}
-      className="w-full h-full min-h-0"
+      style={{ display: 'contents' }}
     >
       <motion.button
         onClick={() => onSelect(opt.value)}
         disabled={showCheck}
-        whileHover={!showCheck ? { y: -2, scale: 1.03 } : {}}
+        whileHover={!showCheck ? { scale: 1.03 } : {}}
         whileTap={!showCheck ? { scale: 0.93 } : {}}
         animate={
           isSelected
             ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
             : { scale: 1 }
         }
-        className="relative flex flex-col items-center justify-center gap-1 rounded-2xl focus:outline-none w-full h-full"
+        className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none"
         style={{
-          padding: '8px 4px',
+          padding: '10px 6px',
           border: '1.5px solid',
           transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
           ...(isSelected
@@ -317,22 +317,21 @@ function LikertCard({
               }),
         }}
       >
-        {/* Icon — tamanho relativo à altura disponível via clamp */}
+        {/* Ícone */}
         <motion.div
-          className="flex items-center justify-center"
           animate={
             isSelected
               ? { scale: 1.15, transition: { type: 'spring', stiffness: 520, damping: 20 } }
-              : { scale: 1,    transition: { type: 'spring', stiffness: 400, damping: 28 } }
+              : { scale: 1, transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
           <img
             src={likertImages[opt.value]}
             alt={opt.label}
             style={{
-              width: 'clamp(28px, 7vw, 40px)',
-              height: 'clamp(28px, 7vw, 40px)',
-              borderRadius: 8,
+              width: 44,
+              height: 44,
+              borderRadius: 10,
               objectFit: 'cover',
               filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
               transition: 'filter 0.18s',
@@ -342,7 +341,7 @@ function LikertCard({
 
         {/* Label */}
         <span
-          className="text-[9px] font-semibold text-center leading-tight font-display px-0.5"
+          className="text-[9px] font-semibold text-center leading-tight font-display"
           style={{
             color: isSelected ? color : 'hsl(var(--muted-foreground))',
             transition: 'color 0.18s',
@@ -351,15 +350,13 @@ function LikertCard({
           {opt.label}
         </span>
 
-        {/* Check flash overlay */}
+        {/* Check overlay */}
         <AnimatePresence>
           {isSelected && showCheck && (
             <motion.div
               className="absolute inset-0 flex items-center justify-center rounded-2xl"
               style={{ background: color + '28' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
             >
               <motion.div
@@ -367,12 +364,7 @@ function LikertCard({
                 animate={{ scale: 1, rotate: 0, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 500, damping: 16 }}
               >
-                <CircleCheck
-                  size={28}
-                  strokeWidth={2}
-                  color={color}
-                  style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
-                />
+                <CircleCheck size={28} strokeWidth={2} color={color} style={{ filter: `drop-shadow(0 0 8px ${color}99)` }} />
               </motion.div>
             </motion.div>
           )}
