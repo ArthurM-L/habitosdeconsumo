@@ -48,20 +48,19 @@ const slideTransition = {
   mass: 0.9,
 };
 
-// Staggered card container
+// Staggered card container — uses "hidden/visible" to avoid collision with parent
 const cardListVariants = {
-  enter: {},
-  center: { transition: { staggerChildren: 0.045, delayChildren: 0.06 } },
-  exit:   { transition: { staggerChildren: 0.03 } },
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
 };
 
 // Per-card spring
 const cardItemVariants = {
-  enter:  { opacity: 0, y: 18, scale: 0.93 },
-  center: { opacity: 1, y: 0,  scale: 1,
-            transition: { type: 'spring' as const, stiffness: 420, damping: 28 } },
-  exit:   { opacity: 0, y: -10, scale: 0.95,
-            transition: { duration: 0.16 } },
+  hidden:  { opacity: 0, y: 20, scale: 0.92 },
+  visible: {
+    opacity: 1, y: 0, scale: 1,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 26 },
+  },
 };
 
 export default function Quiz() {
