@@ -225,7 +225,9 @@ export default function Results() {
 
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-24 max-w-md mx-auto w-full">
+      {/* Confetti */}
+      {showConfetti && <ConfettiCanvas color={primaryGroup.color} />}
+
 
         {/* Greeting */}
         <motion.div
