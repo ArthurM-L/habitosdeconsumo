@@ -10,6 +10,7 @@ import { useQuizStore } from '@/store/quizStore';
 import { questions, likertOptions, calculateResults } from '@/data/quizData';
 import type { LucideIcon } from 'lucide-react';
 import concordoTotalmenteImg from '@/assets/concordo-totalmente.jpeg';
+import concordoImg from '@/assets/concordo.jpeg';
 
 // Icon per scale step
 const likertIcons: Record<number, LucideIcon> = {
