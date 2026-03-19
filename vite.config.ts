@@ -18,4 +18,9 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Inline all assets up to 512 KB as base64 data URIs so they are
+    // bundled directly into the JS — zero network requests, zero flicker.
+    assetsInlineLimit: 512 * 1024,
+  },
 }));
