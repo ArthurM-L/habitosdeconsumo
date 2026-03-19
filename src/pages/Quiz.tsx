@@ -285,15 +285,15 @@ function LikertCard({
       whileHover={!showCheck ? { scale: 1.03 } : {}}
       whileTap={!showCheck ? { scale: 0.93 } : {}}
       animate={isSelected ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } } : { scale: 1 }}
-      className="relative rounded-2xl focus:outline-none"
+      className="relative rounded-2xl focus:outline-none overflow-hidden"
       style={{
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
-        padding: '10px 6px',
+        gap: 6,
+        padding: '8px 4px',
         minWidth: 0,
         border: '1.5px solid',
         transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
@@ -302,29 +302,45 @@ function LikertCard({
           : { background: 'hsl(var(--card) / 0.55)', borderColor: 'hsl(var(--border) / 0.55)', backdropFilter: 'blur(14px)' }),
       }}
     >
+      {/* Glow de fundo quando selecionado */}
+      {isSelected && (
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${color}18, transparent 70%)`,
+        }} />
+      )}
+
       <motion.img
         src={likertImages[opt.value]}
         alt={opt.label}
-        animate={isSelected ? { scale: 1.15 } : { scale: 1 }}
+        animate={isSelected ? { scale: 1.12 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          width: 'clamp(36px, 6vh, 64px)',
-          height: 'clamp(36px, 6vh, 64px)',
+          width: 'clamp(36px, 9vh, 72px)',
+          height: 'clamp(36px, 9vh, 72px)',
           borderRadius: 10,
           objectFit: 'cover',
           flexShrink: 0,
+          position: 'relative', zIndex: 1,
           filter: isSelected ? `drop-shadow(0 0 8px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
           transition: 'filter 0.18s',
         }}
       />
       <span style={{
-        fontSize: 9, fontWeight: 600, textAlign: 'center', lineHeight: 1.2,
-        fontFamily: 'inherit', flexShrink: 0,
+        fontSize: 'clamp(8px, 1.4vh, 11px)',
+        fontWeight: 600,
+        textAlign: 'center',
+        lineHeight: 1.2,
+        fontFamily: 'inherit',
+        flexShrink: 0,
+        position: 'relative', zIndex: 1,
         color: isSelected ? color : 'hsl(var(--muted-foreground))',
         transition: 'color 0.18s',
+        padding: '0 2px',
       }}>
         {opt.label}
       </span>
+
       <AnimatePresence>
         {isSelected && showCheck && (
           <motion.div className="absolute inset-0 flex items-center justify-center rounded-2xl"
