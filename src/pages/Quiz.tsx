@@ -34,10 +34,34 @@ const milestoneMessages: Record<number, { text: string }> = {
   7: { text: 'Quase lá — só mais 3' },
 };
 
+// Question slide — spring physics for the whole panel
 const slideVariants = {
-  enter: (d: number) => ({ x: d > 0 ? 48 : -48, opacity: 0 }),
-  center: { x: 0, opacity: 1 },
-  exit: (d: number) => ({ x: d > 0 ? -48 : 48, opacity: 0 }),
+  enter: (d: number) => ({ x: d > 0 ? 56 : -56, opacity: 0, scale: 0.97 }),
+  center: { x: 0, opacity: 1, scale: 1 },
+  exit: (d: number) => ({ x: d > 0 ? -56 : 56, opacity: 0, scale: 0.97 }),
+};
+
+const slideTransition = {
+  type: 'spring' as const,
+  stiffness: 340,
+  damping: 32,
+  mass: 0.9,
+};
+
+// Staggered card container
+const cardListVariants = {
+  enter: {},
+  center: { transition: { staggerChildren: 0.045, delayChildren: 0.06 } },
+  exit:   { transition: { staggerChildren: 0.03 } },
+};
+
+// Per-card spring
+const cardItemVariants = {
+  enter:  { opacity: 0, y: 18, scale: 0.93 },
+  center: { opacity: 1, y: 0,  scale: 1,
+            transition: { type: 'spring' as const, stiffness: 420, damping: 28 } },
+  exit:   { opacity: 0, y: -10, scale: 0.95,
+            transition: { duration: 0.16 } },
 };
 
 export default function Quiz() {
