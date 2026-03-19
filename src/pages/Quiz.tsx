@@ -308,8 +308,12 @@ function LikertCard({
         animate={isSelected ? { scale: 1.15 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          width: 44, height: 44, borderRadius: 10, objectFit: 'cover', flexShrink: 0,
-          filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
+          width: 'clamp(36px, 6vh, 64px)',
+          height: 'clamp(36px, 6vh, 64px)',
+          borderRadius: 10,
+          objectFit: 'cover',
+          flexShrink: 0,
+          filter: isSelected ? `drop-shadow(0 0 8px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
           transition: 'filter 0.18s',
         }}
       />
