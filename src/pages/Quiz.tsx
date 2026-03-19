@@ -280,15 +280,21 @@ function LikertCard({
 }) {
   return (
     <motion.button
-      variants={cardItemVariants}
       onClick={() => onSelect(opt.value)}
       disabled={showCheck}
       whileHover={!showCheck ? { scale: 1.03 } : {}}
       whileTap={!showCheck ? { scale: 0.93 } : {}}
       animate={isSelected ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } } : { scale: 1 }}
-      className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
+      className="relative rounded-2xl focus:outline-none"
       style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
         padding: '10px 6px',
+        minWidth: 0,
         border: '1.5px solid',
         transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
         ...(isSelected
@@ -302,13 +308,17 @@ function LikertCard({
         animate={isSelected ? { scale: 1.15 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         style={{
-          width: 44, height: 44, borderRadius: 10, objectFit: 'cover',
+          width: 44, height: 44, borderRadius: 10, objectFit: 'cover', flexShrink: 0,
           filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
           transition: 'filter 0.18s',
         }}
       />
-      <span className="text-[9px] font-semibold text-center leading-tight font-display"
-        style={{ color: isSelected ? color : 'hsl(var(--muted-foreground))', transition: 'color 0.18s' }}>
+      <span style={{
+        fontSize: 9, fontWeight: 600, textAlign: 'center', lineHeight: 1.2,
+        fontFamily: 'inherit', flexShrink: 0,
+        color: isSelected ? color : 'hsl(var(--muted-foreground))',
+        transition: 'color 0.18s',
+      }}>
         {opt.label}
       </span>
       <AnimatePresence>
