@@ -74,27 +74,35 @@ export default function Landing() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
-          {profiles.map((p, i) => (
-            <motion.div
-              key={p.name}
-              className="glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 + i * 0.1 }}
-              whileHover={{ y: -4, scale: 1.03 }}
-            >
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                style={{ background: p.color + '33' }}
+          {profiles.map((p, i) => {
+            const Icon = p.icon;
+            return (
+              <motion.div
+                key={p.name}
+                className="glass-strong rounded-2xl p-4 flex flex-col items-center gap-2 cursor-default"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 + i * 0.1, type: 'spring', stiffness: 340, damping: 26 }}
+                whileHover={{ y: -4, scale: 1.03 }}
               >
-                {p.icon}
-              </div>
-              <span className="text-xs font-bold font-display text-foreground/80">{p.name}</span>
-            </motion.div>
-          ))}
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: p.color + '22',
+                    border: `1px solid ${p.color}44`,
+                    boxShadow: `0 0 12px ${p.color}22`,
+                  }}
+                >
+                  <Icon size={20} style={{ color: p.color }} strokeWidth={1.8} />
+                </div>
+                <span className="text-xs font-bold font-display text-foreground/80">{p.name}</span>
+                <span className="text-[10px] font-display text-muted-foreground/60">{p.sub}</span>
+              </motion.div>
+            );
+          })}
         </motion.div>
 
-        {/* Social proof */}
+        {/* Social proof — Lucide user avatars instead of emojis */}
         <motion.div
           className="flex items-center gap-2 mt-6 text-sm text-muted-foreground"
           initial={{ opacity: 0 }}
@@ -102,9 +110,17 @@ export default function Landing() {
           transition={{ delay: 0.8 }}
         >
           <div className="flex -space-x-2">
-            {['🧑', '👩', '🧑‍💼'].map((emoji, i) => (
-              <div key={i} className="w-7 h-7 rounded-full glass-strong flex items-center justify-center text-sm border border-border/60">
-                {emoji}
+            {[
+              'hsl(77 100% 50%)',
+              'hsl(38 92% 50%)',
+              'hsl(162 60% 48%)',
+            ].map((color, i) => (
+              <div
+                key={i}
+                className="w-7 h-7 rounded-full glass-strong flex items-center justify-center border border-border/60"
+                style={{ boxShadow: `0 0 6px ${color}44` }}
+              >
+                <Zap size={12} style={{ color }} strokeWidth={2} />
               </div>
             ))}
           </div>
