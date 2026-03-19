@@ -150,12 +150,24 @@ export default function Results() {
   const navigate = useNavigate();
   const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
   const [copied, setCopied] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const savedRef = useRef(false);
 
   useEffect(() => {
     if (phase === 'landing') { navigate('/'); return; }
     if (phase === 'quiz') { navigate('/quiz'); return; }
   }, [phase, navigate]);
+
+  // Dispara confete ao montar a tela de resultados
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3500);
+    }, 400);
+    return () => clearTimeout(t);
+  }, []);
+
+
 
   useEffect(() => {
     if (!results.length || savedRef.current) return;
