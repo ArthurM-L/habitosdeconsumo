@@ -146,10 +146,10 @@ export default function Quiz() {
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
 
       {/* ── HUD ── */}
-      <header className="shrink-0 px-4 pt-8 pb-2 max-w-lg mx-auto w-full">
+      <header className="shrink-0 px-4 pt-6 pb-1 max-w-lg mx-auto w-full">
 
         {/* Top row: label + counter + XP */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground font-display">
               Pergunta
@@ -161,17 +161,17 @@ export default function Quiz() {
           </div>
 
           {/* XP pill */}
-          <div className="relative flex items-center gap-1.5 glass rounded-full px-3 py-1.5">
-            <Zap className="w-3.5 h-3.5 fill-warning text-warning" />
-            <span className="text-sm font-extrabold font-display text-foreground tabular-nums">{xp}</span>
+          <div className="relative flex items-center gap-1.5 glass rounded-full px-3 py-1">
+            <Zap className="w-3 h-3 fill-warning text-warning" />
+            <span className="text-xs font-extrabold font-display text-foreground tabular-nums">{xp}</span>
             <AnimatePresence>
               {showXpPop && (
                 <motion.span
                   key={xpPopKey}
-                  className="absolute -top-6 right-1 text-[11px] font-bold pointer-events-none font-display"
+                  className="absolute -top-5 right-1 text-[10px] font-bold pointer-events-none font-display"
                   style={{ color: 'hsl(var(--warning))' }}
                   initial={{ y: 0, opacity: 1, scale: 0.9 }}
-                  animate={{ y: -16, opacity: 0, scale: 1.3 }}
+                  animate={{ y: -14, opacity: 0, scale: 1.3 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.65 }}
                 >
@@ -205,13 +205,13 @@ export default function Quiz() {
         <AnimatePresence>
           {streak >= 3 && (
             <motion.div
-              className="flex items-center gap-1.5 mt-2 text-[11px] font-semibold font-display"
+              className="flex items-center gap-1 mt-1.5 text-[10px] font-semibold font-display"
               style={{ color: 'hsl(var(--warning))' }}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0 }}
             >
-              <Flame className="w-3.5 h-3.5 fill-warning" />
+              <Flame className="w-3 h-3 fill-warning" />
               <span>{streak} em sequência</span>
             </motion.div>
           )}
@@ -219,7 +219,7 @@ export default function Quiz() {
       </header>
 
       {/* ── Question + Options ── */}
-      <div className="flex-1 flex flex-col px-4 pb-4 max-w-lg mx-auto w-full min-h-0">
+      <div className="flex-1 flex flex-col px-4 pb-3 max-w-lg mx-auto w-full min-h-0 gap-3">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentQuestion}
@@ -229,45 +229,46 @@ export default function Quiz() {
             animate="center"
             exit="exit"
             transition={slideTransition}
-            className="flex flex-col flex-1 gap-4"
+            className="flex flex-col flex-1 gap-3 min-h-0"
           >
-            {/* Question card — springs in slightly after the slide */}
+            {/* Question card */}
             <motion.div
-              className="glass-strong rounded-3xl p-5 relative overflow-hidden"
+              className="glass-strong rounded-2xl px-4 py-3 relative overflow-hidden shrink-0"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 360, damping: 28, delay: 0.05 }}
             >
               <div
-                className="absolute -top-6 -right-6 w-36 h-36 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
+                className="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-[0.08] blur-3xl pointer-events-none"
                 style={{ background: 'hsl(var(--primary))' }}
               />
               <div className="relative z-10">
-                <div className="flex items-center gap-2.5 mb-3">
+                <div className="flex items-center gap-2 mb-2">
                   <div
-                    className="w-8 h-8 rounded-xl gradient-bg flex items-center justify-center shrink-0"
-                    style={{ boxShadow: '0 0 12px hsl(77 100% 50% / 0.4)' }}
+                    className="w-7 h-7 rounded-lg gradient-bg flex items-center justify-center shrink-0"
+                    style={{ boxShadow: '0 0 10px hsl(77 100% 50% / 0.4)' }}
                   >
-                    <span className="text-xs font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
+                    <span className="text-[11px] font-extrabold font-display" style={{ color: 'hsl(var(--primary-foreground))' }}>
                       {currentQuestion + 1}
                     </span>
                   </div>
                   <div className="h-px flex-1 bg-border/30" />
                 </div>
-                <h2 className="font-display text-[1.1rem] sm:text-xl font-bold leading-snug text-foreground">
+                <h2 className="font-display text-[0.95rem] font-bold leading-snug text-foreground">
                   {question.text}
                 </h2>
               </div>
             </motion.div>
 
-            {/* Likert options — staggered spring entrance, isolated variant namespace */}
+            {/* Likert options — single 5-column row on mobile */}
             <motion.div
-              className="flex flex-col gap-2.5 flex-1"
+              className="flex flex-col gap-2 flex-1 min-h-0"
               variants={cardListVariants}
               initial="hidden"
               animate="visible"
             >
-              <div className="grid grid-cols-2 gap-2.5 flex-1" style={{ minHeight: 0 }}>
+              {/* Row 1: 2 cards */}
+              <div className="grid grid-cols-2 gap-2" style={{ flex: '2 1 0' }}>
                 {likertOptions.slice(0, 2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -279,7 +280,8 @@ export default function Quiz() {
                   />
                 ))}
               </div>
-              <div className="grid grid-cols-3 gap-2.5 flex-1" style={{ minHeight: 0 }}>
+              {/* Row 2: 3 cards */}
+              <div className="grid grid-cols-3 gap-2" style={{ flex: '3 1 0' }}>
                 {likertOptions.slice(2).map((opt) => (
                   <LikertCard
                     key={opt.value}
@@ -297,7 +299,7 @@ export default function Quiz() {
             <AnimatePresence>
               {!selectedValue && (
                 <motion.p
-                  className="text-center text-[11px] text-muted-foreground/50 font-display tracking-wide"
+                  className="text-center text-[10px] text-muted-foreground/40 font-display tracking-wide shrink-0"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -315,14 +317,14 @@ export default function Quiz() {
       <AnimatePresence>
         {showMilestone && (
           <motion.div
-            className="fixed inset-x-0 bottom-8 flex justify-center z-50 pointer-events-none px-5"
+            className="fixed inset-x-0 bottom-6 flex justify-center z-50 pointer-events-none px-5"
             initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 380, damping: 26 }}
           >
             <div
-              className="glass-strong rounded-2xl px-5 py-3 flex items-center gap-2.5 border border-primary/25"
+              className="glass-strong rounded-2xl px-5 py-2.5 flex items-center gap-2.5 border border-primary/25"
               style={{ boxShadow: 'var(--glow-primary)' }}
             >
               <Trophy className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--warning))' }} />
@@ -345,34 +347,31 @@ function LikertCard({
   onSelect: (v: 1 | 2 | 3 | 4 | 5) => void;
   color: string;
 }) {
-
   return (
-    // Picks up cardItemVariants from cardListVariants stagger
     <motion.div
       variants={cardItemVariants}
-      className="w-full h-full"
-      style={{ minHeight: '80px' }}
+      className="w-full h-full min-h-0"
     >
       <motion.button
         onClick={() => onSelect(opt.value)}
         disabled={showCheck}
-        whileHover={!showCheck ? { y: -3, scale: 1.035 } : {}}
+        whileHover={!showCheck ? { y: -2, scale: 1.03 } : {}}
         whileTap={!showCheck ? { scale: 0.93 } : {}}
         animate={
           isSelected
-            ? { scale: [1, 1.07, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
+            ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 18 } }
             : { scale: 1 }
         }
-        className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
+        className="relative flex flex-col items-center justify-center gap-1.5 rounded-2xl focus:outline-none w-full h-full"
         style={{
-          padding: '14px 8px',
+          padding: '10px 6px',
           border: '1.5px solid',
           transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
           ...(isSelected
             ? {
                 background: color + '20',
                 borderColor: color,
-                boxShadow: `0 0 0 1px ${color}55, 0 0 22px ${color}35`,
+                boxShadow: `0 0 0 1px ${color}55, 0 0 18px ${color}35`,
               }
             : {
                 background: 'hsl(var(--card) / 0.55)',
@@ -381,20 +380,20 @@ function LikertCard({
               }),
         }}
       >
-        {/* Icon — spring scale on select */}
+        {/* Icon */}
         <motion.div
           animate={
             isSelected
-              ? { scale: 1.2, transition: { type: 'spring', stiffness: 520, damping: 20 } }
-              : { scale: 1,   transition: { type: 'spring', stiffness: 400, damping: 28 } }
+              ? { scale: 1.18, transition: { type: 'spring', stiffness: 520, damping: 20 } }
+              : { scale: 1,    transition: { type: 'spring', stiffness: 400, damping: 28 } }
           }
         >
           <img
             src={likertImages[opt.value]}
             alt={opt.label}
             style={{
-              width: 30,
-              height: 30,
+              width: 36,
+              height: 36,
               borderRadius: 8,
               objectFit: 'cover',
               filter: isSelected ? `drop-shadow(0 0 6px ${color}99)` : 'grayscale(0.3) brightness(0.85)',
@@ -405,7 +404,7 @@ function LikertCard({
 
         {/* Label */}
         <span
-          className="text-[10px] font-semibold text-center leading-tight font-display px-0.5"
+          className="text-[9px] font-semibold text-center leading-tight font-display"
           style={{
             color: isSelected ? color : 'hsl(var(--muted-foreground))',
             transition: 'color 0.18s',
@@ -414,7 +413,7 @@ function LikertCard({
           {opt.label}
         </span>
 
-        {/* Check flash overlay — spring pop */}
+        {/* Check flash overlay */}
         <AnimatePresence>
           {isSelected && showCheck && (
             <motion.div
@@ -431,10 +430,10 @@ function LikertCard({
                 transition={{ type: 'spring', stiffness: 500, damping: 16 }}
               >
                 <CircleCheck
-                  size={36}
+                  size={32}
                   strokeWidth={2}
                   color={color}
-                  style={{ filter: `drop-shadow(0 0 10px ${color}99)` }}
+                  style={{ filter: `drop-shadow(0 0 8px ${color}99)` }}
                 />
               </motion.div>
             </motion.div>
