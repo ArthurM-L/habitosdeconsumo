@@ -250,7 +250,7 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
   return (
     <div className="flex flex-col h-full">
       <StepHeader icon={Users} number="02" title="Identidade de gênero" />
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2.5 mb-4">
         {genderOptions.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -277,6 +277,11 @@ function GenderStep({ value, onChange }: { value: string; onChange: (v: string) 
             </motion.button>
           );
         })}
+      </div>
+      {/* Info cards que preenchem o espaço */}
+      <div className="flex flex-col gap-2.5 flex-1 justify-end pb-2">
+        <InfoCard icon={Shield} title="Informação opcional" description="Sua identidade de gênero nos ajuda a personalizar a análise do seu perfil geracional." />
+        <InfoCard icon={Sparkles} title="Análise inclusiva" description="Levamos em conta todas as identidades de gênero para uma análise mais precisa e representativa." />
       </div>
     </div>
   );
