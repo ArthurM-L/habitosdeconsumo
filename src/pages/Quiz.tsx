@@ -345,72 +345,95 @@ function LikertCard({
   const IconComponent = likertIcons[opt.value];
 
   return (
-    <motion.button
-      onClick={() => onSelect(opt.value)}
-      disabled={showCheck}
-      whileHover={!showCheck ? { y: -2, scale: 1.02 } : {}}
-      whileTap={!showCheck ? { scale: 0.96 } : {}}
-      className={`relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none transition-all${stretch ? ' w-full h-full' : ''}`}
-      style={{
-        minHeight: '80px',
-        padding: '14px 8px',
-        border: '1.5px solid',
-        transition: 'background 0.18s, border-color 0.18s, box-shadow 0.18s',
-        ...(isSelected
-          ? {
-              background: color + '1e',
-              borderColor: color,
-              boxShadow: `0 0 18px ${color}40`,
-            }
-          : {
-              background: 'hsl(var(--card) / 0.55)',
-              borderColor: 'hsl(var(--border) / 0.55)',
-              backdropFilter: 'blur(14px)',
-            }),
-      }}
+    // Outer wrapper picks up the stagger from cardListVariants
+    <motion.div
+      variants={cardItemVariants}
+      className={stretch ? 'w-full h-full' : ''}
+      style={{ minHeight: '80px' }}
     >
-      {/* Lucide icon */}
-      <IconComponent
-        size={26}
-        strokeWidth={isSelected ? 2.5 : 1.8}
-        color={isSelected ? color : 'hsl(var(--muted-foreground))'}
-        style={{ transition: 'color 0.18s, stroke-width 0.18s' }}
-      />
-
-      {/* Label */}
-      <span
-        className="text-[10px] font-semibold text-center leading-tight font-display px-0.5"
-        style={{ color: isSelected ? color : 'hsl(var(--muted-foreground))' }}
+      <motion.button
+        onClick={() => onSelect(opt.value)}
+        disabled={showCheck}
+        whileHover={!showCheck ? { y: -3, scale: 1.035 } : {}}
+        whileTap={!showCheck ? { scale: 0.94 } : {}}
+        // Spring-physics border glow on selection
+        animate={
+          isSelected
+            ? { scale: [1, 1.06, 1], transition: { type: 'spring', stiffness: 500, damping: 20 } }
+            : { scale: 1 }
+        }
+        className="relative flex flex-col items-center justify-center gap-2 rounded-2xl focus:outline-none w-full h-full"
+        style={{
+          padding: '14px 8px',
+          border: '1.5px solid',
+          transition: 'background 0.2s, border-color 0.2s, box-shadow 0.25s',
+          ...(isSelected
+            ? {
+                background: color + '20',
+                borderColor: color,
+                boxShadow: `0 0 0 1px ${color}60, 0 0 22px ${color}38`,
+              }
+            : {
+                background: 'hsl(var(--card) / 0.55)',
+                borderColor: 'hsl(var(--border) / 0.55)',
+                backdropFilter: 'blur(14px)',
+              }),
+        }}
       >
-        {opt.label}
-      </span>
+        {/* Lucide icon — spring scale on select */}
+        <motion.div
+          animate={
+            isSelected
+              ? { scale: 1.18, rotate: 0, transition: { type: 'spring', stiffness: 520, damping: 22 } }
+              : { scale: 1, rotate: 0, transition: { type: 'spring', stiffness: 400, damping: 28 } }
+          }
+        >
+          <IconComponent
+            size={26}
+            strokeWidth={isSelected ? 2.5 : 1.8}
+            color={isSelected ? color : 'hsl(var(--muted-foreground))'}
+            style={{ transition: 'color 0.18s' }}
+          />
+        </motion.div>
 
-      {/* Check flash overlay — CircleCheck icon instead of ✅ emoji */}
-      <AnimatePresence>
-        {isSelected && showCheck && (
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center rounded-2xl"
-            style={{ background: color + '28' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
+        {/* Label */}
+        <span
+          className="text-[10px] font-semibold text-center leading-tight font-display px-0.5"
+          style={{
+            color: isSelected ? color : 'hsl(var(--muted-foreground))',
+            transition: 'color 0.18s',
+          }}
+        >
+          {opt.label}
+        </span>
+
+        {/* Check flash overlay with spring pop */}
+        <AnimatePresence>
+          {isSelected && showCheck && (
             <motion.div
-              initial={{ scale: 0.3, rotate: -20 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 460, damping: 18 }}
+              className="absolute inset-0 flex items-center justify-center rounded-2xl"
+              style={{ background: color + '28' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
             >
-              <CircleCheck
-                size={36}
-                strokeWidth={2}
-                color={color}
-                style={{ filter: `drop-shadow(0 0 8px ${color}88)` }}
-              />
+              <motion.div
+                initial={{ scale: 0.2, rotate: -30, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 16 }}
+              >
+                <CircleCheck
+                  size={36}
+                  strokeWidth={2}
+                  color={color}
+                  style={{ filter: `drop-shadow(0 0 10px ${color}99)` }}
+                />
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
+          )}
+        </AnimatePresence>
+      </motion.button>
+    </motion.div>
   );
 }
