@@ -1,35 +1,28 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Share2, Check, ShieldAlert } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { RotateCcw, Share2, Check, ShieldAlert, Sparkles, Bot } from 'lucide-react';
+import {
+  RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
+  ResponsiveContainer, Tooltip,
+} from 'recharts';
 import { useQuizStore } from '@/store/quizStore';
 import { groups } from '@/data/quizData';
 import { supabase } from '@/integrations/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // ── Confetti canvas ──
 function ConfettiCanvas({ color }: { color: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
-    // Parse the hex color and derive palette
     const palette = [color, '#B4FF00', '#ffffff', '#FAFF00', '#00FFB3', '#FF6BFF'];
-
-    type Particle = {
-      x: number; y: number; vx: number; vy: number;
-      size: number; color: string; rotation: number;
-      rotSpeed: number; shape: 'rect' | 'circle' | 'line';
-      opacity: number;
-    };
-
+    type Particle = { x: number; y: number; vx: number; vy: number; size: number; color: string; rotation: number; rotSpeed: number; shape: 'rect' | 'circle' | 'line'; opacity: number };
     const particles: Particle[] = Array.from({ length: 120 }, () => ({
       x: Math.random() * canvas.width,
       y: -20 - Math.random() * 160,
@@ -42,66 +35,30 @@ function ConfettiCanvas({ color }: { color: string }) {
       shape: (['rect', 'circle', 'line'] as const)[Math.floor(Math.random() * 3)],
       opacity: 0.85 + Math.random() * 0.15,
     }));
-
     let raf: number;
     let startTime: number | null = null;
     const duration = 3200;
-
     const draw = (ts: number) => {
       if (!startTime) startTime = ts;
-      const elapsed = ts - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
+      const progress = Math.min((ts - startTime) / duration, 1);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
       particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.rotation += p.rotSpeed;
-        p.vy += 0.06; // gravity
+        p.x += p.vx; p.y += p.vy; p.rotation += p.rotSpeed; p.vy += 0.06;
         p.opacity = Math.max(0, p.opacity - (progress > 0.6 ? 0.012 : 0));
-
-        ctx.save();
-        ctx.globalAlpha = p.opacity;
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.fillStyle = p.color;
-        ctx.strokeStyle = p.color;
-
-        if (p.shape === 'rect') {
-          ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-        } else if (p.shape === 'circle') {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(-p.size / 2, 0);
-          ctx.lineTo(p.size / 2, 0);
-          ctx.stroke();
-        }
+        ctx.save(); ctx.globalAlpha = p.opacity; ctx.translate(p.x, p.y); ctx.rotate(p.rotation);
+        ctx.fillStyle = p.color; ctx.strokeStyle = p.color;
+        if (p.shape === 'rect') { ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2); }
+        else if (p.shape === 'circle') { ctx.beginPath(); ctx.arc(0, 0, p.size / 2.5, 0, Math.PI * 2); ctx.fill(); }
+        else { ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-p.size / 2, 0); ctx.lineTo(p.size / 2, 0); ctx.stroke(); }
         ctx.restore();
       });
-
-      if (progress < 1) {
-        raf = requestAnimationFrame(draw);
-      } else {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
+      if (progress < 1) raf = requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
     };
-
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
   }, [color]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-50"
-      style={{ width: '100%', height: '100%' }}
-    />
-  );
+  return <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none z-50" style={{ width: '100%', height: '100%' }} />;
 }
 
 function useCountUp(target: number, duration = 1000) {
@@ -111,8 +68,7 @@ function useCountUp(target: number, duration = 1000) {
     const start = performance.now();
     const tick = (now: number) => {
       const p = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setValue(Math.round(eased * target));
+      setValue(Math.round((1 - Math.pow(1 - p, 3)) * target));
       if (p < 1) requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
@@ -128,22 +84,20 @@ const generationRanges: Record<string, string> = {
 };
 
 const generationAlerts: Record<string, { title: string; tip: string }> = {
-  geracaoX: {
-    title: 'Atenção: golpes por e-mail e WhatsApp',
-    tip: 'Desconfie de links recebidos por mensagem, mesmo que pareçam vir de bancos. Antes de clicar, acesse o site diretamente pelo navegador.',
-  },
-  geracaoY: {
-    title: 'Atenção: risco de superendividamento',
-    tip: 'Millennials são os mais propensos ao superendividamento. Regra prática: nunca comprometa mais de 30% da renda com parcelas.',
-  },
-  geracaoZ: {
-    title: 'Atenção: o Efeito Batom no seu bolso',
-    tip: 'Pequenas compras frequentes somadas superam grandes gastos. Rastreie seus micro-consumos por 30 dias — o padrão costuma surpreender.',
-  },
-  geracaoAlpha: {
-    title: 'Atenção: golpes dentro de jogos e apps',
-    tip: 'Desconfie de itens grátis, sorteios em jogos e links de desconhecidos. Nunca compartilhe dados de pagamento fora dos canais oficiais.',
-  },
+  geracaoX: { title: 'Atenção: golpes por e-mail e WhatsApp', tip: 'Desconfie de links recebidos por mensagem, mesmo que pareçam vir de bancos. Antes de clicar, acesse o site diretamente pelo navegador.' },
+  geracaoY: { title: 'Atenção: risco de superendividamento', tip: 'Millennials são os mais propensos ao superendividamento. Regra prática: nunca comprometa mais de 30% da renda com parcelas.' },
+  geracaoZ: { title: 'Atenção: o Efeito Batom no seu bolso', tip: 'Pequenas compras frequentes somadas superam grandes gastos. Rastreie seus micro-consumos por 30 dias — o padrão costuma surpreender.' },
+  geracaoAlpha: { title: 'Atenção: golpes dentro de jogos e apps', tip: 'Desconfie de itens grátis, sorteios em jogos e links de desconhecidos. Nunca compartilhe dados de pagamento fora dos canais oficiais.' },
+};
+
+// Custom Radar tooltip
+const RadarTooltipContent = ({ active, payload }: { active?: boolean; payload?: Array<{ value: number; name: string }> }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="glass rounded-xl px-3 py-2" style={{ border: '1px solid hsl(var(--border) / 0.4)', fontSize: 11 }}>
+      <span className="font-display font-bold text-foreground">{payload[0].value}%</span>
+    </div>
+  );
 };
 
 export default function Results() {
@@ -151,6 +105,9 @@ export default function Results() {
   const { results, answers, resetQuiz, phase, userInfo } = useQuizStore();
   const [copied, setCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
   const savedRef = useRef(false);
 
   useEffect(() => {
@@ -158,7 +115,6 @@ export default function Results() {
     if (phase === 'quiz') { navigate('/quiz'); return; }
   }, [phase, navigate]);
 
-  // Dispara confete ao montar a tela de resultados
   useEffect(() => {
     const t = setTimeout(() => {
       setShowConfetti(true);
@@ -166,8 +122,6 @@ export default function Results() {
     }, 400);
     return () => clearTimeout(t);
   }, []);
-
-
 
   useEffect(() => {
     if (!results.length || savedRef.current) return;
@@ -182,8 +136,7 @@ export default function Results() {
         user_gender: userInfo?.gender ?? null,
         user_birthdate: userInfo?.birthdate ?? null,
       };
-      const { data: session, error } = await supabase
-        .from('quiz_sessions').insert(sessionPayload).select().single();
+      const { data: session, error } = await supabase.from('quiz_sessions').insert(sessionPayload).select().single();
       if (error || !session) return;
       if (answers.length > 0) {
         await supabase.from('quiz_answers').insert(
@@ -199,9 +152,10 @@ export default function Results() {
   const secondaries = sorted.slice(1);
   const primaryGroup = primary ? groups.find((g) => g.id === primary.groupId) : null;
 
-  const chartData = sorted.map((r) => {
-    const g = groups.find((gp) => gp.id === r.groupId);
-    return { name: g?.name ?? r.groupId, value: r.percentage, color: g?.color ?? '#B4FF00' };
+  // Radar data
+  const radarData = groups.map((g) => {
+    const r = results.find((rr) => rr.groupId === g.id);
+    return { subject: g.name.replace('Geração ', 'Gen. '), value: r?.percentage ?? 0, fullMark: 100 };
   });
 
   const handleCopy = async () => {
@@ -212,6 +166,34 @@ export default function Results() {
   };
 
   const handleRetry = () => { resetQuiz(); navigate('/'); };
+
+  const handleGenerateAiAnalysis = async () => {
+    if (!primaryGroup || !primary) return;
+    setAiLoading(true);
+    setAiError(null);
+    try {
+      const secondaryMap: Record<string, number> = {};
+      secondaries.forEach((s) => { secondaryMap[s.groupId] = s.percentage; });
+      const { data, error } = await supabase.functions.invoke('generate-analysis', {
+        body: {
+          profile: primaryGroup.name,
+          percentage: primary.percentage,
+          name: userInfo?.name ?? null,
+          gender: userInfo?.gender ?? null,
+          secondaryProfiles: secondaryMap,
+        },
+      });
+      if (error) throw error;
+      setAiAnalysis(data?.analysis ?? 'Análise não disponível.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg.includes('429')) setAiError('Muitas requisições. Aguarde um momento e tente novamente.');
+      else if (msg.includes('402')) setAiError('Créditos insuficientes. Adicione créditos em Configurações → Uso.');
+      else setAiError('Erro ao gerar análise. Tente novamente.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   if (!primary || !primaryGroup) {
     return (
@@ -225,18 +207,12 @@ export default function Results() {
 
   return (
     <div className="h-screen mesh-bg flex flex-col overflow-hidden">
-      {/* Confetti */}
       {showConfetti && <ConfettiCanvas color={primaryGroup.color} />}
 
-      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-24 max-w-md mx-auto w-full">
+      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-28 max-w-md mx-auto w-full">
 
         {/* Greeting */}
-        <motion.div
-          className="text-center mb-3"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-        >
+        <motion.div className="text-center mb-3" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
           <p className="text-muted-foreground text-[10px] uppercase tracking-widest font-display mb-0.5">Seu resultado</p>
           <h1 className="font-display text-lg font-extrabold text-foreground">
             {userInfo?.name ? `Olá, ${userInfo.name.split(' ')[0]}!` : 'Perfil encontrado!'}
@@ -247,93 +223,90 @@ export default function Results() {
         <motion.div
           className="rounded-2xl p-4 relative overflow-hidden mb-3"
           style={{ background: primaryGroup.color + '12', border: `1.5px solid ${primaryGroup.color}38` }}
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.08, duration: 0.35 }}
+          initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.08, duration: 0.35 }}
         >
-          <div className="absolute inset-0 pointer-events-none"
-            style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${primaryGroup.color}15, transparent 70%)` }} />
+          <div className="absolute inset-0 pointer-events-none" style={{ background: `radial-gradient(ellipse 80% 60% at 50% 0%, ${primaryGroup.color}15, transparent 70%)` }} />
           <div className="relative z-10 flex items-center gap-3">
-            <motion.div
-              className="shrink-0 flex flex-col items-center gap-1"
-              initial={{ scale: 0.5, rotate: -12 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 240 }}
-            >
+            <motion.div className="shrink-0 flex flex-col items-center gap-1" initial={{ scale: 0.5, rotate: -12 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: 0.2, type: 'spring', stiffness: 240 }}>
               <span className="text-[2.8rem] leading-none">{primaryGroup.icon}</span>
               {generationRanges[primaryGroup.id] && (
-                <span className="text-[9px] font-bold font-display px-1.5 py-0.5 rounded-full whitespace-nowrap"
-                  style={{ background: primaryGroup.color + '22', color: primaryGroup.color }}>
+                <span className="text-[9px] font-bold font-display px-1.5 py-0.5 rounded-full whitespace-nowrap" style={{ background: primaryGroup.color + '22', color: primaryGroup.color }}>
                   {generationRanges[primaryGroup.id]}
                 </span>
               )}
             </motion.div>
             <div className="flex-1 min-w-0">
-              <h2 className="font-display font-extrabold text-sm leading-tight mb-0.5" style={{ color: primaryGroup.color }}>
-                {primaryGroup.name}
-              </h2>
+              <h2 className="font-display font-extrabold text-sm leading-tight mb-0.5" style={{ color: primaryGroup.color }}>{primaryGroup.name}</h2>
               <PrimaryPercentage value={primary.percentage} color={primaryGroup.color} />
-              <p className="text-muted-foreground text-[11px] leading-snug mt-0.5 line-clamp-2">
-                {primaryGroup.description}
-              </p>
+              <p className="text-muted-foreground text-[11px] leading-snug mt-0.5 line-clamp-2">{primaryGroup.description}</p>
             </div>
           </div>
         </motion.div>
 
-        {/* Chart + secondaries */}
+        {/* Radar Chart */}
         <motion.div
-          className="grid grid-cols-2 gap-2.5 mb-3"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          className="glass rounded-2xl p-3.5 mb-3"
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}
         >
-          {/* Donut */}
-          <div className="glass rounded-2xl p-2.5 flex flex-col">
-            <p className="font-display font-bold text-[9px] text-muted-foreground uppercase tracking-wider text-center mb-1.5">
-              Distribuição
-            </p>
-            <div style={{ height: 90 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie data={chartData} cx="50%" cy="50%" innerRadius={26} outerRadius={40}
-                    paddingAngle={3} dataKey="value" isAnimationActive animationBegin={300} animationDuration={900}>
-                    {chartData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ background: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: 10 }}
-                    formatter={(v: number) => [`${v}%`]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex flex-col gap-0.5 mt-1.5">
-              {chartData.map((d) => (
-                <div key={d.name} className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: d.color }} />
-                  <span className="text-[9px] text-muted-foreground leading-none truncate">{d.name}</span>
-                  <span className="ml-auto text-[9px] font-bold shrink-0" style={{ color: d.color }}>{d.value}%</span>
-                </div>
-              ))}
-            </div>
+          <p className="font-display font-bold text-[9px] text-muted-foreground uppercase tracking-wider text-center mb-2">
+            Radar de Perfis
+          </p>
+          <div style={{ height: 170 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={radarData} margin={{ top: 8, right: 28, bottom: 8, left: 28 }}>
+                <PolarGrid stroke="hsl(var(--border) / 0.3)" />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))', fontFamily: 'inherit' }}
+                />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar
+                  name="Perfil"
+                  dataKey="value"
+                  stroke={primaryGroup.color}
+                  fill={primaryGroup.color}
+                  fillOpacity={0.18}
+                  strokeWidth={2}
+                  dot={{ r: 3, fill: primaryGroup.color, strokeWidth: 0 }}
+                  isAnimationActive
+                  animationBegin={400}
+                  animationDuration={900}
+                />
+                <Tooltip content={<RadarTooltipContent />} />
+              </RadarChart>
+            </ResponsiveContainer>
           </div>
+        </motion.div>
 
-          {/* Secondary cards */}
-          <div className="flex flex-col gap-1.5">
-            <p className="font-display font-bold text-[9px] text-muted-foreground uppercase tracking-wider text-center">
-              Outras gerações
-            </p>
-            {secondaries.map((r) => {
+        {/* Animated horizontal bars — all profiles */}
+        <motion.div
+          className="glass rounded-2xl p-3.5 mb-3"
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.26 }}
+        >
+          <p className="font-display font-bold text-[9px] text-muted-foreground uppercase tracking-wider mb-2.5">
+            Distribuição completa
+          </p>
+          <div className="space-y-2.5">
+            {sorted.map((r, idx) => {
               const g = groups.find((gp) => gp.id === r.groupId);
               if (!g) return null;
               return (
-                <div key={r.groupId} className="glass rounded-xl px-2.5 py-2 flex items-center gap-1.5">
-                  <span className="text-base leading-none shrink-0">{g.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-display font-bold text-[9px] text-foreground truncate">{g.name}</div>
-                    <div className="font-extrabold text-xs leading-tight" style={{ color: g.color }}>{r.percentage}%</div>
+                <div key={r.groupId}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-sm leading-none">{g.icon}</span>
+                      <span className="font-display font-semibold text-[10px] text-foreground">{g.name}</span>
+                    </div>
+                    <span className="font-display font-extrabold text-[11px]" style={{ color: g.color }}>{r.percentage}%</span>
                   </div>
-                  <div className="w-8 h-1 rounded-full overflow-hidden shrink-0" style={{ background: 'hsl(var(--muted))' }}>
-                    <div className="h-full rounded-full" style={{ width: `${r.percentage}%`, background: g.color }} />
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'hsl(var(--muted))' }}>
+                    <motion.div
+                      className="h-full rounded-full"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${r.percentage}%` }}
+                      transition={{ duration: 0.8, delay: 0.3 + idx * 0.08, ease: 'easeOut' }}
+                      style={{ background: g.color }}
+                    />
                   </div>
                 </div>
               );
@@ -344,9 +317,7 @@ export default function Results() {
         {/* Interpretation */}
         <motion.div
           className="glass rounded-2xl p-3.5 mb-3"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.32 }}
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34 }}
         >
           <div className="flex items-center gap-2 mb-1.5">
             <div className="w-0.5 h-4 rounded-full gradient-bg shrink-0" />
@@ -355,17 +326,87 @@ export default function Results() {
           <p className="text-muted-foreground text-[12px] leading-relaxed">{primaryGroup.interpretation}</p>
         </motion.div>
 
+        {/* AI Analysis */}
+        <motion.div
+          className="rounded-2xl mb-3 overflow-hidden"
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42 }}
+          style={{ border: '1.5px solid hsl(var(--primary) / 0.2)', background: 'hsl(var(--primary) / 0.04)' }}
+        >
+          <div className="px-3.5 pt-3.5 pb-3">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg gradient-bg flex items-center justify-center shrink-0">
+                  <Bot className="w-3.5 h-3.5" style={{ color: 'hsl(var(--primary-foreground))' }} />
+                </div>
+                <h3 className="font-display font-bold text-xs text-foreground">Análise personalizada</h3>
+              </div>
+              {!aiAnalysis && !aiLoading && (
+                <motion.button
+                  onClick={handleGenerateAiAnalysis}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-display font-bold text-[10px] transition-all"
+                  style={{ background: 'var(--gradient-primary)', color: 'hsl(var(--primary-foreground))', boxShadow: 'var(--glow-primary)' }}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  Gerar análise
+                </motion.button>
+              )}
+            </div>
+
+            {/* Loading skeletons */}
+            {aiLoading && (
+              <div className="space-y-2 py-1">
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-5/6" />
+                <Skeleton className="h-3 w-4/6" />
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-3/5" />
+              </div>
+            )}
+
+            {/* Error */}
+            {aiError && !aiLoading && (
+              <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: 'hsl(var(--destructive) / 0.08)', border: '1px solid hsl(var(--destructive) / 0.25)' }}>
+                <ShieldAlert className="w-3.5 h-3.5 shrink-0" style={{ color: 'hsl(var(--destructive))' }} />
+                <p className="text-[11px] leading-relaxed" style={{ color: 'hsl(var(--destructive))' }}>{aiError}</p>
+              </div>
+            )}
+
+            {/* Analysis result — glassmorphism card */}
+            {aiAnalysis && !aiLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="rounded-xl p-3"
+                style={{
+                  background: 'hsl(var(--card) / 0.6)',
+                  backdropFilter: 'blur(20px)',
+                  border: '1px solid hsl(var(--primary) / 0.15)',
+                  boxShadow: '0 4px 24px hsl(var(--primary) / 0.08)',
+                }}
+              >
+                <p className="text-[12px] leading-relaxed text-foreground/90">{aiAnalysis}</p>
+              </motion.div>
+            )}
+
+            {/* Placeholder when not yet generated */}
+            {!aiAnalysis && !aiLoading && !aiError && (
+              <p className="text-[11px] text-muted-foreground/60 leading-relaxed">
+                Gere uma análise personalizada com base no seu perfil geracional e hábitos de consumo.
+              </p>
+            )}
+          </div>
+        </motion.div>
+
         {/* Alert card */}
         {alert && (
           <motion.div
-            className="rounded-2xl p-3.5 relative overflow-hidden"
+            className="rounded-2xl p-3.5 relative overflow-hidden mb-2"
             style={{ background: 'hsl(var(--warning) / 0.08)', border: '1.5px solid hsl(var(--warning) / 0.28)' }}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.42 }}
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
           >
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--warning) / 0.06), transparent 70%)' }} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, hsl(var(--warning) / 0.06), transparent 70%)' }} />
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-1.5">
                 <ShieldAlert className="w-4 h-4 shrink-0" style={{ color: 'hsl(var(--warning))' }} />
@@ -381,9 +422,7 @@ export default function Results() {
       <motion.div
         className="fixed bottom-0 left-0 right-0 px-4 pb-6 pt-3 z-20"
         style={{ background: 'linear-gradient(to top, hsl(var(--background)) 70%, transparent)' }}
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
       >
         <div className="flex gap-2 max-w-md mx-auto">
           <button
