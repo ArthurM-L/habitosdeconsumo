@@ -5,8 +5,8 @@ import { ArrowRight, User, Calendar, ChevronLeft, Users, Shield, Sparkles, Clock
 import { useQuizStore } from '@/store/quizStore';
 import { genderOptions } from '@/data/quizData';
 
-type Step = 'name' | 'gender' | 'birthdate';
-const STEPS: Step[] = ['name', 'gender', 'birthdate'];
+type Step = 'gender' | 'birthdate';
+const STEPS: Step[] = ['gender', 'birthdate'];
 
 const slideVariants = {
   enter: { x: 40, opacity: 0 },
