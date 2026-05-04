@@ -246,7 +246,7 @@ function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onC
 
   return (
     <div className="flex flex-col h-full">
-      <StepHeader icon={Calendar} number="03" title="Data de nascimento" />
+      <StepHeader icon={Calendar} number="02" title="Data de nascimento" />
 
       <input
         type="date"
