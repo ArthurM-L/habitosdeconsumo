@@ -15,9 +15,8 @@ const slideVariants = {
 };
 
 const stepMeta: Record<Step, { icon: React.ElementType; label: string; title: string; number: string }> = {
-  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',   number: '01' },
-  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '02' },
-  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '03' },
+  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '01' },
+  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '02' },
 };
 
 export default function Intro() {
