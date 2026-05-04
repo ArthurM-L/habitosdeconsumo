@@ -129,9 +129,6 @@ export default function Intro() {
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="h-full flex flex-col"
           >
-            {currentStep === 'name' && (
-              <NameStep value={name} onChange={setName} error={nameError} onEnter={handleNext} />
-            )}
             {currentStep === 'gender' && (
               <GenderStep value={gender} onChange={setGender} />
             )}
