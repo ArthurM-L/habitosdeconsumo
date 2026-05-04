@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, User, Calendar, ChevronLeft, Users, Shield, Sparkles, Clock } from 'lucide-react';
+import { ArrowRight, Calendar, ChevronLeft, Users, Shield, Sparkles, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { genderOptions } from '@/data/quizData';
 
