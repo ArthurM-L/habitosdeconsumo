@@ -24,18 +24,11 @@ export default function Intro() {
   const { setUserInfo, setPhase } = useQuizStore();
 
   const [stepIndex, setStepIndex] = useState(0);
-  const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [birthdate, setBirthdate] = useState('');
-  const [nameError, setNameError] = useState('');
   const [bdError, setBdError] = useState('');
 
   const currentStep = STEPS[stepIndex];
-
-  const validateName = () => {
-    if (!name.trim() || name.trim().length < 2) { setNameError('Por favor, insira seu nome completo.'); return false; }
-    setNameError(''); return true;
-  };
 
   const validateBirthdate = () => {
     if (!birthdate) { setBdError('Por favor, informe sua data de nascimento.'); return false; }
@@ -48,11 +41,10 @@ export default function Intro() {
   };
 
   const handleNext = () => {
-    if (currentStep === 'name' && !validateName()) return;
     if (currentStep === 'gender' && !gender) return;
     if (currentStep === 'birthdate') {
       if (birthdate && !validateBirthdate()) return;
-      setUserInfo({ name: name.trim(), gender, birthdate });
+      setUserInfo({ name: '', gender, birthdate });
       setPhase('quiz');
       navigate('/quiz');
       return;
@@ -66,7 +58,6 @@ export default function Intro() {
   };
 
   const canProceed =
-    (currentStep === 'name' && name.trim().length >= 2) ||
     (currentStep === 'gender' && !!gender) ||
     currentStep === 'birthdate';
 
