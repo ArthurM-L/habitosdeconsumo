@@ -185,7 +185,7 @@ function StepHeader({ icon: Icon, number, title }: { icon: React.ElementType; nu
 function GenderStep({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="flex flex-col h-full">
-      <StepHeader icon={Users} number="02" title="Identidade de gênero" />
+      <StepHeader icon={Users} number="01" title="Identidade de gênero" />
 
       {/* Opções distribuídas uniformemente */}
       <div className="flex flex-col gap-3 flex-1 justify-evenly py-2">
