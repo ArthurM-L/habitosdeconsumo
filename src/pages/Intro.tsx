@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, User, Calendar, ChevronLeft, Users, Shield, Sparkles, Clock } from 'lucide-react';
+import { ArrowRight, Calendar, ChevronLeft, Users, Shield, Sparkles, Clock } from 'lucide-react';
 import { useQuizStore } from '@/store/quizStore';
 import { genderOptions } from '@/data/quizData';
 
-type Step = 'name' | 'gender' | 'birthdate';
-const STEPS: Step[] = ['name', 'gender', 'birthdate'];
+type Step = 'gender' | 'birthdate';
+const STEPS: Step[] = ['gender', 'birthdate'];
 
 const slideVariants = {
   enter: { x: 40, opacity: 0 },
@@ -15,9 +15,8 @@ const slideVariants = {
 };
 
 const stepMeta: Record<Step, { icon: React.ElementType; label: string; title: string; number: string }> = {
-  name:      { icon: User,     label: 'Identificação', title: 'Qual é o seu nome?',   number: '01' },
-  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '02' },
-  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '03' },
+  gender:    { icon: Users,    label: 'Identidade',    title: 'Identidade de gênero', number: '01' },
+  birthdate: { icon: Calendar, label: 'Nascimento',    title: 'Data de nascimento',   number: '02' },
 };
 
 export default function Intro() {
@@ -25,18 +24,11 @@ export default function Intro() {
   const { setUserInfo, setPhase } = useQuizStore();
 
   const [stepIndex, setStepIndex] = useState(0);
-  const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [birthdate, setBirthdate] = useState('');
-  const [nameError, setNameError] = useState('');
   const [bdError, setBdError] = useState('');
 
   const currentStep = STEPS[stepIndex];
-
-  const validateName = () => {
-    if (!name.trim() || name.trim().length < 2) { setNameError('Por favor, insira seu nome completo.'); return false; }
-    setNameError(''); return true;
-  };
 
   const validateBirthdate = () => {
     if (!birthdate) { setBdError('Por favor, informe sua data de nascimento.'); return false; }
@@ -49,11 +41,10 @@ export default function Intro() {
   };
 
   const handleNext = () => {
-    if (currentStep === 'name' && !validateName()) return;
     if (currentStep === 'gender' && !gender) return;
     if (currentStep === 'birthdate') {
       if (birthdate && !validateBirthdate()) return;
-      setUserInfo({ name: name.trim(), gender, birthdate });
+      setUserInfo({ name: '', gender, birthdate });
       setPhase('quiz');
       navigate('/quiz');
       return;
@@ -67,7 +58,6 @@ export default function Intro() {
   };
 
   const canProceed =
-    (currentStep === 'name' && name.trim().length >= 2) ||
     (currentStep === 'gender' && !!gender) ||
     currentStep === 'birthdate';
 
@@ -139,9 +129,6 @@ export default function Intro() {
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="h-full flex flex-col"
           >
-            {currentStep === 'name' && (
-              <NameStep value={name} onChange={setName} error={nameError} onEnter={handleNext} />
-            )}
             {currentStep === 'gender' && (
               <GenderStep value={gender} onChange={setGender} />
             )}
@@ -194,62 +181,11 @@ function StepHeader({ icon: Icon, number, title }: { icon: React.ElementType; nu
   );
 }
 
-// ── Name step ──
-function NameStep({ value, onChange, error, onEnter }: { value: string; onChange: (v: string) => void; error: string; onEnter: () => void }) {
-  return (
-    <div className="flex flex-col h-full">
-      <StepHeader icon={User} number="01" title="Qual é o seu nome?" />
-
-      <div className="relative mb-2">
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && onEnter()}
-          placeholder="Seu nome completo"
-          autoFocus
-          maxLength={120}
-          className="w-full rounded-2xl px-4 py-4 font-display text-base font-semibold text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all duration-200"
-          style={{
-            background: 'hsl(var(--card) / 0.6)',
-            border: '1.5px solid hsl(var(--border) / 0.5)',
-            backdropFilter: 'blur(12px)',
-          }}
-          onFocus={(e) => (e.target.style.borderColor = 'hsl(var(--primary) / 0.7)')}
-          onBlur={(e) => (e.target.style.borderColor = 'hsl(var(--border) / 0.5)')}
-        />
-        {value.trim().length >= 2 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ background: 'hsl(var(--primary) / 0.15)' }}
-          >
-            <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(var(--primary))' }} />
-          </motion.div>
-        )}
-      </div>
-      {error && (
-        <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="text-xs mb-2 px-1" style={{ color: 'hsl(var(--destructive))' }}>
-          {error}
-        </motion.p>
-      )}
-
-      {/* Info cards distribuídos uniformemente no espaço restante */}
-      <div className="flex flex-col gap-2 flex-1 justify-evenly py-2">
-        <InfoCard icon={Sparkles} title="Perfil personalizado" description="Seu nome aparece nos resultados para tornar a experiência única." />
-        <InfoCard icon={Shield} title="Privacidade garantida" description="Seus dados não são compartilhados. Tudo fica apenas no seu dispositivo." />
-        <InfoCard icon={Clock} title="Menos de 5 minutos" description="O quiz tem 10 perguntas rápidas sobre seus hábitos e comportamentos." />
-      </div>
-    </div>
-  );
-}
-
 // ── Gender step ──
 function GenderStep({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
     <div className="flex flex-col h-full">
-      <StepHeader icon={Users} number="02" title="Identidade de gênero" />
+      <StepHeader icon={Users} number="01" title="Identidade de gênero" />
 
       {/* Opções distribuídas uniformemente */}
       <div className="flex flex-col gap-3 flex-1 justify-evenly py-2">
@@ -310,7 +246,7 @@ function BirthdateStep({ value, onChange, error, onEnter }: { value: string; onC
 
   return (
     <div className="flex flex-col h-full">
-      <StepHeader icon={Calendar} number="03" title="Data de nascimento" />
+      <StepHeader icon={Calendar} number="02" title="Data de nascimento" />
 
       <input
         type="date"
